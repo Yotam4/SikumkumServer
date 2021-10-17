@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SikumkumServer
 {
-    public class Startup
+    public class Startup // I NEED TO ADD THE PORT BINDINGS // I NEED TO ADD THE PORT BINDINGS // I NEED TO ADD THE PORT BINDINGS
     {
         public Startup(IConfiguration configuration)
         {
