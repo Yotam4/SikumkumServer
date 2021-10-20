@@ -25,17 +25,20 @@ namespace SikumkumServerBL.Models
             {
                 User addUser = new User(username, email, password);
 
-                if (addUser != null)
-                    return addUser;
-                else
+                if (addUser == null) //If the user was not created.
+                {
                     throw new Exception("User values are incorrect.");
+                }                
 
-                 this.Users.Add(addUser); //ADD THE THINGS THAT CHECKS IF IT WAS ADDED SUCCESSFULLY OR NOT.
+                this.Users.Add(addUser); //ADD THE THINGS THAT CHECKS IF IT WAS ADDED SUCCESSFULLY OR NOT.
+                this.SaveChanges();
+
+                return addUser;
             }
 
-            catch (Exception e)
+            catch
             {
-                throw e;
+                return null;
             }
         }
     }
