@@ -25,6 +25,9 @@ namespace SikumkumServerBL.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserMessage> UserMessages { get; set; }
 
+
+        public User Log { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
