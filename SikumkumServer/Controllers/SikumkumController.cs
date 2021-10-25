@@ -27,9 +27,9 @@ namespace SikumkumServer.Controllers
 
         [Route("Login")]
         [HttpGet]
-        public User Login([FromQuery] string username, [FromQuery] string password)
+        public User Login([FromQuery] string username, [FromQuery] string pass)
         {
-            User user = context.Login(username, password);
+            User user = context.Login(username, pass);
             
             if(user != null)
             {
@@ -37,7 +37,7 @@ namespace SikumkumServer.Controllers
 
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
-                return user;
+                return user; //MIGHT NEED TO BE DIFFERENT, CHECK IN CLASS.
             }
 
             else

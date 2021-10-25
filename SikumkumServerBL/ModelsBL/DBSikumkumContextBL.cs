@@ -14,7 +14,7 @@ namespace SikumkumServerBL.Models
 
         public User Login(string username, string password)
         {
-            User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password));
+            User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password)); //There could be a better option than single. Research when you're not lazy.S
 
             return loginUser;
         }
@@ -27,7 +27,7 @@ namespace SikumkumServerBL.Models
 
                 if (addUser == null) //If the user was not created.
                 {
-                    throw new Exception("User values are incorrect.");
+                    throw new Exception("User values are incorrect."); //Might need change.
                 }                
 
                 this.Users.Add(addUser); //ADD THE THINGS THAT CHECKS IF IT WAS ADDED SUCCESSFULLY OR NOT.
