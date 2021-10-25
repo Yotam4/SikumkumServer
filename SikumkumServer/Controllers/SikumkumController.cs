@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SikumkumServerBL.Models;
+using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace SikumkumServer.Controllers
 {
@@ -17,6 +20,53 @@ namespace SikumkumServer.Controllers
         public SikumkumController(DBSikumkumContext context)
         {
             this.context = context;
+            
+            
+        }
+
+
+        [Route("Login")]
+        [HttpGet]
+        public User Login([FromQuery] string username, [FromQuery] string password)
+        {
+            User user = context.Login(username, password);
+            
+            if(user != null)
+            {
+                HttpContext.Session.SetObject("theUser", user);
+
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                return user;
+            }
+
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return null;
+            }
+        }
+
+        [Route("SignUp")]
+        [HttpPost]
+        public User SignUp([FromBody] string username, [FromBody] string email, [FromBody] string password)
+        {
+            User signedUp = context.SignUp(username, email, password);
+
+            if(signedUp != null)
+            {
+                HttpContext.Session.SetObject("theUser", signedUp);
+
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                return signedUp;
+            }
+
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return null;
+            }
         }
     }
 }
