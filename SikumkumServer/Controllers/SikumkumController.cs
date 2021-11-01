@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SikumkumServer.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("SikumkumAPIController")]
     [ApiController]
     public class SikumkumController : ControllerBase // I NEED TO ADD THE PORT BINDINGS
     {
@@ -27,9 +27,9 @@ namespace SikumkumServer.Controllers
 
         [Route("Login")]
         [HttpGet]
-        public User Login([FromQuery] string username, [FromQuery] string pass)
+        public async Task<User> Login([FromQuery] string username, [FromQuery] string pass)
         {
-            User user = context.Login(username, pass);
+            User user = await context.Login(username, pass);
             
             if(user != null)
             {
@@ -37,7 +37,7 @@ namespace SikumkumServer.Controllers
 
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
-                return user; //MIGHT NEED TO BE DIFFERENT, CHECK IN CLASS.
+                return user; 
             }
 
             else
@@ -49,9 +49,9 @@ namespace SikumkumServer.Controllers
 
         [Route("SignUp")]
         [HttpPost]
-        public User SignUp([FromBody] string username, [FromBody] string email, [FromBody] string password)
+        public User SignUp([FromBody] User userDTO)
         {
-            User signedUp = context.SignUp(username, email, password);
+            User signedUp = context.SignUp(userDTO.Username, userDTO.Email, userDTO.Password);
 
             if(signedUp != null)
             {

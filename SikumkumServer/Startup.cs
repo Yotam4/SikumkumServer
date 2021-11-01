@@ -43,7 +43,7 @@ namespace SikumkumServer
 
             //The following set the connection string to the DB and DB context!
             #region Add DB Context Support
-            string connectionString = this.Configuration.GetConnectionString("ContactsDB");
+            string connectionString = this.Configuration.GetConnectionString("DBSikumkum");
 
             services.AddDbContext<DBSikumkumContext>(options => options
                                                                 .UseSqlServer(connectionString));
