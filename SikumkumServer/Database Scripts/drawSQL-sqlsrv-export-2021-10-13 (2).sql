@@ -1,3 +1,5 @@
+CREATE DATABASE DBSikumkum
+
 CREATE TABLE "Users"(
     "UserID" INT NOT NULL Identity(1000,1),
     "Username" NVARCHAR(255) NOT NULL,
