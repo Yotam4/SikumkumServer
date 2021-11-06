@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SikumkumServerBL.Models;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
-
+using SikumkumServerBL.DTO;
 
 namespace SikumkumServer.Controllers
 {
@@ -49,9 +49,9 @@ namespace SikumkumServer.Controllers
 
         [Route("SignUp")]
         [HttpPost]
-        public User SignUp([FromBody] User userDTO)
+        public User SignUp([FromBody] UserDTO userDTO)
         {
-            User signedUp = context.SignUp(userDTO.Username, userDTO.Email, userDTO.Password);
+            User signedUp = context.SignUp(userDTO);
 
             if(signedUp != null)
             {

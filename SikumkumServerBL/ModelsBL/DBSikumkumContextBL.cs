@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SikumkumServerBL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using SikumkumServerBL.DTO;
 
 namespace SikumkumServerBL.Models
 {
@@ -27,11 +28,11 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public User SignUp(string username, string email, string password)
+        public User SignUp(UserDTO user)
         {
             try
             {
-                User addUser = new User(username, email, password);
+                User addUser = new User(user.Username, user.Email, user.Password);
 
                 if (addUser == null) //If the user was not created.
                 {
