@@ -27,9 +27,9 @@ namespace SikumkumServer.Controllers
 
         [Route("Login")]
         [HttpGet]
-        public async Task<User> Login([FromQuery] string username, [FromQuery] string pass)
+        public async Task<UserDTO> Login([FromQuery] string username, [FromQuery] string pass)
         {
-            User user = await context.Login(username, pass);
+            UserDTO user = await context.Login(username, pass);
             
             if(user != null)
             {

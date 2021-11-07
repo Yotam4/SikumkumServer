@@ -13,19 +13,19 @@ namespace SikumkumServerBL.Models
     public partial class DBSikumkumContext : DbContext
     {
 
-        public async Task<User> Login(string username, string password)
+        public async Task<UserDTO> Login(string username, string password)
         {
             try
             {
                
                 User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password)); //There could be a better option than single. Research when you're not lazy.S
-
-                return loginUser;
+                UserDTO returnUser = new UserDTO(loginUser);
+                return returnUser;
             }
 
             catch(Exception e)
             {
-                throw e;
+                return null;
             }
         }
 
