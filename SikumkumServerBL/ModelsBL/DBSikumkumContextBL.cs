@@ -17,6 +17,7 @@ namespace SikumkumServerBL.Models
         {
             try
             {
+               
                 User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password)); //There could be a better option than single. Research when you're not lazy.S
 
                 return loginUser;
@@ -28,7 +29,7 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public User SignUp(UserDTO user)
+        public async Task<User> SignUp(UserDTO user)
         {
             try
             {

@@ -49,9 +49,9 @@ namespace SikumkumServer.Controllers
 
         [Route("SignUp")]
         [HttpPost]
-        public User SignUp([FromBody] UserDTO userDTO)
+        public async Task<bool> SignUp([FromBody] UserDTO userDTO)
         {
-            User signedUp = context.SignUp(userDTO);
+            User signedUp = await context.SignUp(userDTO);
 
             if(signedUp != null)
             {
@@ -59,13 +59,13 @@ namespace SikumkumServer.Controllers
 
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
-                return signedUp;
+                return true;
             }
 
             else
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
-                return null;
+                return false;
             }
         }
     }
