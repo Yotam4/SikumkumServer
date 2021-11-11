@@ -23,21 +23,32 @@ namespace SikumkumServerBL.Models
                 return returnUser;
             }
 
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }
         }
 
+
         public async Task<User> SignUp(UserDTO user)
         {
             try
             {
-                User addUser = new User(user.Username, user.Email, user.Password);
 
+                User isDuplicate = this.Users.Single(u => (u.Username == user.Username || u.Email == user.Email)); //Checks if the Username or Email already exists.
+                if(isDuplicate != null)
+                {
+                    if (user.Username == isDuplicate.Username)                    
+                        throw new Exception("This Username is already in use. Please pick a new one.");
+                    
+                    if (user.Email == isDuplicate.Email)                    
+                        throw new Exception("This Email is already in use. Please pick a new one.");                    
+                }
+
+                User addUser = new User(user.Username, user.Email, user.Password);
                 if (addUser == null) //If the user was not created.
                 {
-                    throw new Exception("User values are incorrect."); //Might need change.
+                    throw new Exception("User values are incorrect, could not create new user."); //Might need change.
                 }                
 
                 this.Users.Add(addUser); //ADD THE THINGS THAT CHECKS IF IT WAS ADDED SUCCESSFULLY OR NOT.
