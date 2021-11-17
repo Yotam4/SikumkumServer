@@ -34,15 +34,14 @@ namespace SikumkumServerBL.Models
         {
             try
             {
-
-                User isDuplicate = this.Users.Single(u => (u.Username == user.Username || u.Email == user.Email)); //Checks if the Username or Email already exists.
-                if(isDuplicate != null)
+                User isDuplicate = this.Users.FirstOrDefault(u => (u.Username == user.Username || u.Email == user.Email)); //Checks if the Username or Email already exists.
+                if (isDuplicate != null)
                 {
-                    if (user.Username == isDuplicate.Username)                    
+                    if (user.Username == isDuplicate.Username)
                         throw new Exception("This Username is already in use. Please pick a new one.");
-                    
-                    if (user.Email == isDuplicate.Email)                    
-                        throw new Exception("This Email is already in use. Please pick a new one.");                    
+
+                    if (user.Email == isDuplicate.Email)
+                        throw new Exception("This Email is already in use. Please pick a new one.");
                 }
 
                 User addUser = new User(user.Username, user.Email, user.Password);

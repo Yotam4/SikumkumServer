@@ -7,6 +7,10 @@ namespace SikumkumServerBL.Models
 {
     public partial class User
     {
+        public User()
+        {
+
+        }
         public User(string username, string email, string password)
         {
             this.Username = username;
