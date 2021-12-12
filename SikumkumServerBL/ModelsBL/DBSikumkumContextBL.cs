@@ -17,7 +17,7 @@ namespace SikumkumServerBL.Models
         {
             try
             {
-               
+
                 User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password)); //There could be a better option than single. Research when you're not lazy.S
                 UserDTO returnUser = new UserDTO(loginUser);
                 return returnUser;
@@ -48,7 +48,7 @@ namespace SikumkumServerBL.Models
                 if (addUser == null) //If the user was not created.
                 {
                     throw new Exception("User values are incorrect, could not create new user."); //Might need change.
-                }                
+                }
 
                 this.Users.Add(addUser); //ADD THE THINGS THAT CHECKS IF IT WAS ADDED SUCCESSFULLY OR NOT.
                 this.SaveChanges();
@@ -57,6 +57,28 @@ namespace SikumkumServerBL.Models
             }
 
             catch
+            {
+                return null;
+            }
+        }
+        public async Task<List<Subject>> GetAllSubjects()
+        {
+            try
+            {
+                List<Subject> subjects = new List<Subject>();
+
+                foreach (Subject s in this.Subjects)
+                {
+                    subjects.Add(s);
+                }
+
+                if (subjects.Count == 0)
+                    return null;
+                else
+                    return subjects;
+            }
+
+            catch (Exception e)
             {
                 return null;
             }
