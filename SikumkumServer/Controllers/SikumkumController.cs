@@ -72,15 +72,8 @@ namespace SikumkumServer.Controllers
         [HttpGet]
         public async Task<List<Subject>> GetSubjects()
         {
-            Task<List<Subject>> subjectsTask = context.GetAllSubjects();
-            List<Subject> subjects = subjectsTask.Result;
+            List<Subject> subjects = context.GetAllSubjects();
 
-            int counter = 0;
-            while(subjects == null && counter < 3)
-            {
-                subjectsTask = context.GetAllSubjects();
-                subjects = subjectsTask.Result;
-            }
             if(subjects != null)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;

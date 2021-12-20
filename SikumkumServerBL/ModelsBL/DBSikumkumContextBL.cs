@@ -61,7 +61,7 @@ namespace SikumkumServerBL.Models
                 return null;
             }
         }
-        public async Task<List<Subject>> GetAllSubjects() //Ask about Async.
+        public List<Subject> GetAllSubjects() //Ask about Async.
         {
             try
             {
