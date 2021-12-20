@@ -20,7 +20,7 @@ CREATE TABLE "SikumFiles"(
     "Username" NVARCHAR(255) NOT NULL,
     "TypeID" INT NOT NULL,
     "YearID" INT NOT NULL,
-    "Approved" TINYINT NOT NULL,
+    "Approved" BIT NOT NULL,
     "Headline" NVARCHAR(255) NOT NULL,
     "TextDesc" NVARCHAR(255) NOT NULL,
     "ChatBoxID" INT NOT NULL,
@@ -36,7 +36,7 @@ CREATE UNIQUE INDEX "sikumfiles_yearid_unique" ON
     "SikumFiles"("YearID");
 CREATE TABLE "Subjects"(
     "SubjectID" INT NOT NULL Identity,
-    "Subject" NVARCHAR(255) NOT NULL
+    "SubjectName" NVARCHAR(255) NOT NULL
 );
 ALTER TABLE
     "Subjects" ADD CONSTRAINT "subjects_subjectid_primary" PRIMARY KEY("SubjectID");

@@ -11,7 +11,7 @@ namespace SikumkumServerBL.Models
         public string Username { get; set; }
         public int TypeId { get; set; }
         public int YearId { get; set; }
-        public byte Approved { get; set; }
+        public bool Approved { get; set; }
         public string Headline { get; set; }
         public string TextDesc { get; set; }
         public int ChatBoxId { get; set; }
