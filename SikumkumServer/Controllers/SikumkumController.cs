@@ -87,5 +87,25 @@ namespace SikumkumServer.Controllers
                 return null;
             }
         }
+
+        [Route("GetFiles")]
+        [HttpPost]
+        public async Task<List<SikumFile>> GetFiles(bool getSummary, bool getPractice, bool getEssay)
+        {
+            List<SikumFile> files = context.GetChosenFiles(getSummary, getEssay, getPractice);
+
+            if (files != null)
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                return files;
+            }
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+
+                return null;
+            }
+        }
     }
 }

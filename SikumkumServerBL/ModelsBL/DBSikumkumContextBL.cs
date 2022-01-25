@@ -83,5 +83,42 @@ namespace SikumkumServerBL.Models
                 return null;
             }
         }
+
+        public List<SikumFile> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice)
+        {
+            try
+            {
+                List<SikumFile> files = new List<SikumFile>();
+
+                string nameSummary = "@"; //Trash value that will never return true.
+                string nameEssay = "@";
+                string namePractice = "@";
+
+                if (getSummary) //If true, add correct value to search for.
+                    nameSummary = "Summary";
+                if (getEssay)
+                    nameSummary = "Essay";
+                if (getPractice)
+                    nameSummary = "Practice";
+
+                var getCorrectFiles = 
+                from file in this.SikumFiles
+                where file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice
+                select file;
+
+                files = getCorrectFiles.ToList();
+
+
+                if (files.Count == 0) //If there is nothing in the list.
+                    return null;
+                else
+                    return files;
+            }
+
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
