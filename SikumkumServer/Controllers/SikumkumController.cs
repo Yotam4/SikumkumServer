@@ -89,10 +89,10 @@ namespace SikumkumServer.Controllers
         }
 
         [Route("GetFiles")]
-        [HttpPost]
-        public async Task<List<SikumFile>> GetFiles(bool getSummary, bool getPractice, bool getEssay)
+        [HttpGet]
+        public async Task<List<SikumFile>> GetFiles([FromQuery] bool getSummary, [FromQuery] bool getPractice, [FromQuery] bool getEssay, [FromQuery] string subjectName)
         {
-            List<SikumFile> files = context.GetChosenFiles(getSummary, getEssay, getPractice);
+            List<SikumFile> files = context.GetChosenFiles(getSummary, getEssay, getPractice, subjectName);
 
             if (files != null)
             {

@@ -84,7 +84,7 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public List<SikumFile> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice)
+        public List<SikumFile> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace SikumkumServerBL.Models
 
                 var getCorrectFiles = 
                 from file in this.SikumFiles
-                where file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice
+                where file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice && file.Subject.SubjectName 
                 select file;
 
                 files = getCorrectFiles.ToList();
