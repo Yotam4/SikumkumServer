@@ -13,7 +13,7 @@ namespace SikumkumServer.Controllers
 {
     [Route("SikumkumAPIController")]
     [ApiController]
-    public class SikumkumController : ControllerBase // I NEED TO ADD THE PORT BINDINGS
+    public class SikumkumController : ControllerBase
     {
         DBSikumkumContext context;
 

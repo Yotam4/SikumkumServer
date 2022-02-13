@@ -1,10 +1,9 @@
-CREATE DATABASE DBSikumkum
-
+use DBSikumkum
 CREATE TABLE "Users"(
     "UserID" INT NOT NULL Identity(1000,1),
     "Username" NVARCHAR(255) NOT NULL,
     "Email" NVARCHAR(255) NOT NULL,
-    "IsAdmin" TINYINT NOT NULL,
+    "IsAdmin" BIT NOT NULL,
     "NumUploads" INT NOT NULL,
     "Password" NVARCHAR(255) NOT NULL,
     "Rating" FLOAT NOT NULL
@@ -18,25 +17,30 @@ CREATE UNIQUE INDEX "users_email_unique" ON
 CREATE TABLE "SikumFiles"(
     "FileID" INT NOT NULL Identity(25000,1),
     "Username" NVARCHAR(255) NOT NULL,
+    "ChatBoxID" INT NOT NULL,
+    "SubjectID" INT NOT NULL,
     "TypeID" INT NOT NULL,
     "YearID" INT NOT NULL,
     "Approved" BIT NOT NULL,
     "Headline" NVARCHAR(255) NOT NULL,
     "TextDesc" NVARCHAR(255) NOT NULL,
-    "ChatBoxID" INT NOT NULL,
-    "URL" NVARCHAR(255) NULL
+    "URL" NVARCHAR(255) NOT NULL
 );
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_fileid_primary" PRIMARY KEY("FileID");
 CREATE UNIQUE INDEX "sikumfiles_username_unique" ON
     "SikumFiles"("Username");
+CREATE UNIQUE INDEX "sikumfiles_chatboxid_unique" ON
+    "SikumFiles"("ChatBoxID");
+CREATE UNIQUE INDEX "sikumfiles_subjectid_unique" ON
+    "SikumFiles"("SubjectID");
 CREATE UNIQUE INDEX "sikumfiles_typeid_unique" ON
     "SikumFiles"("TypeID");
 CREATE UNIQUE INDEX "sikumfiles_yearid_unique" ON
     "SikumFiles"("YearID");
 CREATE TABLE "Subjects"(
     "SubjectID" INT NOT NULL Identity,
-    "SubjectName" NVARCHAR(255) NOT NULL
+    "Subject" NVARCHAR(255) NOT NULL
 );
 ALTER TABLE
     "Subjects" ADD CONSTRAINT "subjects_subjectid_primary" PRIMARY KEY("SubjectID");
@@ -66,13 +70,15 @@ CREATE UNIQUE INDEX "usermessages_chatboxid_unique" ON
 CREATE UNIQUE INDEX "usermessages_username_unique" ON
     "UserMessages"("Username");
 CREATE TABLE "StudyYear"(
-    "YearID" INT NOT NULL,
+    "YearID" INT NOT NULL Identity,
     "YearName" NVARCHAR(255) NOT NULL
 );
 ALTER TABLE
     "StudyYear" ADD CONSTRAINT "studyyear_yearid_primary" PRIMARY KEY("YearID");
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_chatboxid_foreign" FOREIGN KEY("ChatBoxID") REFERENCES "Chats"("ChatBoxID");
+ALTER TABLE
+    "SikumFiles" ADD CONSTRAINT "sikumfiles_subjectid_foreign" FOREIGN KEY("SubjectID") REFERENCES "Subjects"("SubjectID");
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_typeid_foreign" FOREIGN KEY("TypeID") REFERENCES "FileTypes"("TypeID");
 ALTER TABLE
