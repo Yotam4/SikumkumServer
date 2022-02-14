@@ -8,6 +8,8 @@ namespace SikumkumServerBL.Models
     public partial class Subject
     {
         public int SubjectId { get; set; }
-        public string SubjectName { get; set; }
+        public string Subject1 { get; set; }
+
+        public virtual SikumFile SikumFile { get; set; }
     }
 }

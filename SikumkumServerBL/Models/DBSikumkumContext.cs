@@ -71,6 +71,12 @@ namespace SikumkumServerBL.Models
                 entity.HasKey(e => e.FileId)
                     .HasName("sikumfiles_fileid_primary");
 
+                entity.HasIndex(e => e.ChatBoxId, "sikumfiles_chatboxid_unique")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.SubjectId, "sikumfiles_subjectid_unique")
+                    .IsUnique();
+
                 entity.HasIndex(e => e.TypeId, "sikumfiles_typeid_unique")
                     .IsUnique();
 
@@ -88,6 +94,8 @@ namespace SikumkumServerBL.Models
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.SubjectId).HasColumnName("SubjectID");
+
                 entity.Property(e => e.TextDesc)
                     .IsRequired()
                     .HasMaxLength(255);
@@ -95,6 +103,7 @@ namespace SikumkumServerBL.Models
                 entity.Property(e => e.TypeId).HasColumnName("TypeID");
 
                 entity.Property(e => e.Url)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("URL");
 
@@ -105,10 +114,16 @@ namespace SikumkumServerBL.Models
                 entity.Property(e => e.YearId).HasColumnName("YearID");
 
                 entity.HasOne(d => d.ChatBox)
-                    .WithMany(p => p.SikumFiles)
-                    .HasForeignKey(d => d.ChatBoxId)
+                    .WithOne(p => p.SikumFile)
+                    .HasForeignKey<SikumFile>(d => d.ChatBoxId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("sikumfiles_chatboxid_foreign");
+
+                entity.HasOne(d => d.Subject)
+                    .WithOne(p => p.SikumFile)
+                    .HasForeignKey<SikumFile>(d => d.SubjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("sikumfiles_subjectid_foreign");
 
                 entity.HasOne(d => d.Type)
                     .WithOne(p => p.SikumFile)
@@ -130,9 +145,7 @@ namespace SikumkumServerBL.Models
 
                 entity.ToTable("StudyYear");
 
-                entity.Property(e => e.YearId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("YearID");
+                entity.Property(e => e.YearId).HasColumnName("YearID");
 
                 entity.Property(e => e.YearName)
                     .IsRequired()
@@ -143,9 +156,10 @@ namespace SikumkumServerBL.Models
             {
                 entity.Property(e => e.SubjectId).HasColumnName("SubjectID");
 
-                entity.Property(e => e.SubjectName)
+                entity.Property(e => e.Subject1)
                     .IsRequired()
-                    .HasMaxLength(255);
+                    .HasMaxLength(255)
+                    .HasColumnName("Subject");
             });
 
             modelBuilder.Entity<User>(entity =>

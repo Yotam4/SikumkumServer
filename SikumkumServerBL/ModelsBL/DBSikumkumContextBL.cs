@@ -101,12 +101,12 @@ namespace SikumkumServerBL.Models
                 if (getPractice)
                     nameSummary = "Practice";
 
-                var getCorrectFiles = 
-                from file in this.SikumFiles
-                where file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice && file.Subject.SubjectName 
-                select file;
+                //var getCorrectFiles = 
+                //from file in this.SikumFiles
+                //where file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice && file.Subject.SubjectName 
+                //select file;
 
-                files = getCorrectFiles.ToList();
+                //files = getCorrectFiles.ToList();
 
 
                 if (files.Count == 0) //If there is nothing in the list.
