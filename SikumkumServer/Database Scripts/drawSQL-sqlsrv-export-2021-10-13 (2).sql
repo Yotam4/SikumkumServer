@@ -40,7 +40,7 @@ CREATE UNIQUE INDEX "sikumfiles_yearid_unique" ON
     "SikumFiles"("YearID");
 CREATE TABLE "Subjects"(
     "SubjectID" INT NOT NULL Identity,
-    "Subject" NVARCHAR(255) NOT NULL
+    "SubjectName" NVARCHAR(255) NOT NULL
 );
 ALTER TABLE
     "Subjects" ADD CONSTRAINT "subjects_subjectid_primary" PRIMARY KEY("SubjectID");

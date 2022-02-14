@@ -156,10 +156,9 @@ namespace SikumkumServerBL.Models
             {
                 entity.Property(e => e.SubjectId).HasColumnName("SubjectID");
 
-                entity.Property(e => e.Subject1)
+                entity.Property(e => e.SubjectName)
                     .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("Subject");
+                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<User>(entity =>

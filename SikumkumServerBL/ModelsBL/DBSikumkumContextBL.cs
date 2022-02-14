@@ -90,9 +90,9 @@ namespace SikumkumServerBL.Models
             {
                 List<SikumFile> files = new List<SikumFile>();
 
-                string nameSummary = "@"; //Trash value that will never return true.
-                string nameEssay = "@";
-                string namePractice = "@";
+                string nameSummary = "#"; //Trash value that will never return true.
+                string nameEssay = "#";
+                string namePractice = "#";
 
                 if (getSummary) //If true, add correct value to search for.
                     nameSummary = "Summary";
@@ -101,12 +101,12 @@ namespace SikumkumServerBL.Models
                 if (getPractice)
                     nameSummary = "Practice";
 
-                //var getCorrectFiles = 
-                //from file in this.SikumFiles
-                //where file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice && file.Subject.SubjectName 
-                //select file;
+                var getCorrectFiles =
+                from file in this.SikumFiles
+                where  file.Subject.SubjectName == subjectName && (file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice)
+                select file;
 
-                //files = getCorrectFiles.ToList();
+                files = getCorrectFiles.ToList();
 
 
                 if (files.Count == 0) //If there is nothing in the list.
