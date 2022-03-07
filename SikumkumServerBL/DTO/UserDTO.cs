@@ -7,8 +7,15 @@ using SikumkumServerBL.Models;
 
 namespace SikumkumServerBL.DTO
 {
+
     public class UserDTO
     {
+        public string Username { get; set; }
+
+        public string Email { get; set; }
+
+        public string Password { get; set; }
+
         public UserDTO()
         {
 
@@ -20,10 +27,6 @@ namespace SikumkumServerBL.DTO
             this.Password = u.Password;
         }
 
-        public string Username { get; set; }
 
-        public string Email { get; set; }
-
-        public string Password { get; set; }
     }
 }

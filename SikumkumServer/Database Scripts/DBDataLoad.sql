@@ -9,8 +9,8 @@ VALUES ('סיכום'), ('מטלה'), ('תרגול')
 INSERT INTO StudyYear(YearName)
 VALUES ('תיכון'), ('חטיבה'), ('יסודי'), ('אוניברסיטה')
 
-INSERT INTO FILETYPE (TypeName)
-VALUES ('Summary'), ('Practice'), ('Essay')
+--INSERT INTO FILETYPE (TypeName)
+--VALUES ('Summary'), ('Practice'), ('Essay')
 
-INSERT INTO StudyYear (YearName)
-VALUES ('High School'), ('Middle School'), ('Elementary'), ('University')
+--INSERT INTO StudyYear (YearName)
+--VALUES ('High School'), ('Middle School'), ('Elementary'), ('University')
