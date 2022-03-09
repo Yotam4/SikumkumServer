@@ -26,7 +26,7 @@ namespace SikumkumServer.Controllers
 
 
         [Route("Login")]
-        [HttpGet]
+        [HttpGet] //Change to post.
         public async Task<UserDTO> Login([FromQuery] string username, [FromQuery] string pass)
         {
             UserDTO user = await context.Login(username, pass);
@@ -105,6 +105,30 @@ namespace SikumkumServer.Controllers
                 Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
 
                 return null;
+            }
+        }
+        [Route ("ChangePassword")]
+        [HttpPost]
+        public async Task<bool> ChangePassword([FromBody] UserDTO newUserPass)
+        {
+            if (newUserPass == null)
+                return false;
+            User currentUser = HttpContext.Session.GetObject<User>("theUser"); //Might not work. Should though.
+
+            User newUser = context.ChangeUserPassword(newUserPass, currentUser);
+            if (newUser != null)
+            {
+                HttpContext.Session.SetObject("theUser", newUser); //Set new user to the session.
+
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                return true;
+            }
+
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return false;
             }
         }
 

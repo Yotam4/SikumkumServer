@@ -120,5 +120,23 @@ namespace SikumkumServerBL.Models
                 return null;
             }
         }
+
+        public User ChangeUserPassword(UserDTO newUserPass, User oldUser)
+        {
+            try
+            {
+                if (oldUser != null) //If found, change it's password.
+                {
+                    oldUser.Password = newUserPass.Password;
+                    this.SaveChanges();
+                    return oldUser;
+                }
+                else //if not, return null to make sure the request didnt work.
+                    return null;
+            }
+            catch
+            {
+                return null;
+            }
     }
 }
