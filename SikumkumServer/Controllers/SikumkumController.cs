@@ -113,9 +113,8 @@ namespace SikumkumServer.Controllers
         {
             if (newUserPass == null)
                 return false;
-            User currentUser = HttpContext.Session.GetObject<User>("theUser"); //Might not work. Should though.
 
-            User newUser = context.ChangeUserPassword(newUserPass, currentUser);
+            User newUser = context.ChangeUserPassword(newUserPass); //Should be awaitable?
             if (newUser != null)
             {
                 HttpContext.Session.SetObject("theUser", newUser); //Set new user to the session.

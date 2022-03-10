@@ -121,22 +121,23 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public User ChangeUserPassword(UserDTO newUserPass, User oldUser)
+        public User ChangeUserPassword(UserDTO newUserPass)
         {
             try
             {
-                if (oldUser != null) //If found, change it's password.
-                {
-                    oldUser.Password = newUserPass.Password;
-                    this.SaveChanges();
-                    return oldUser;
-                }
-                else //if not, return null to make sure the request didnt work.
-                    return null;
+                User theUser = this.Users.Single(u => u.Username == newUserPass.Username);
+                if (theUser == null) //No user was found.
+                    throw new Exception("User not found in DB");
+
+                theUser.Password = newUserPass.Password;
+                this.SaveChanges();
+
+                return theUser;
             }
             catch
             {
                 return null;
             }
+        }
     }
 }
