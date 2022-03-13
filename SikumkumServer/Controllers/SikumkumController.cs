@@ -107,6 +107,27 @@ namespace SikumkumServer.Controllers
                 return null;
             }
         }
+
+        [Route("GetUserFiles")]
+        [HttpGet]
+        public async Task<List<SikumFile>> GetUserFiles([FromQuery] string username)
+        {
+            List<SikumFile> userFiles = context.GetUserFiles(username);
+
+            if (userFiles != null)
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                return userFiles;
+            }
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+
+                return null;
+            }
+        }
+
         [Route ("ChangePassword")]
         [HttpPost]
         public async Task<bool> ChangePassword([FromBody] UserDTO newUserPass)

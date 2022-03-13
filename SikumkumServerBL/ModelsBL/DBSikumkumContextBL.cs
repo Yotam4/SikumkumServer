@@ -121,7 +121,34 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public User ChangeUserPassword(UserDTO newUserPass)
+        public List<SikumFile> GetUserFiles(string username) //Returns the files that contain the same username.
+        {
+
+            try
+            {
+                List<SikumFile> userFiles = new List<SikumFile>();
+
+
+                var getUserFiles = //Find the files that match the username.
+                from file in this.SikumFiles
+                where file.Username == username
+                select file;
+
+                userFiles = getUserFiles.ToList();
+
+                if (userFiles == null) //User has no files.
+                    return null;
+
+                return userFiles;
+            }
+
+            catch
+            {
+                return null;
+            }
+        }
+
+        public User ChangeUserPassword(UserDTO newUserPass) //Changes users password.
         {
             try
             {
