@@ -155,27 +155,31 @@ namespace SikumkumServer.Controllers
         [Route("UploadImage")]
         [HttpPost]
 
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage(IFormFileCollection files)
         {
             User user = HttpContext.Session.GetObject<User>("theUser");
             //Check if user logged in and its ID is the same as the contact user ID
             if (user != null)
             {
-                if (file == null)
+                if (files.Count <= 0)
                 {
                     return BadRequest();
                 }
 
                 try
                 {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    long size = files.Sum(f => f.Length);
+
+                    foreach (IFormFile file in files) 
                     {
-                        await file.CopyToAsync(stream);
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                    
                     }
-
-
-                    return Ok(new { length = file.Length, name = file.FileName });
+                    return Ok(new { count = files.Count, size });
                 }
                 catch (Exception e)
                 {
