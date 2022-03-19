@@ -152,7 +152,7 @@ namespace SikumkumServer.Controllers
             }
         }
 
-        [Route("UploadImage")]
+        [Route("UploadFiles")]
         [HttpPost]
 
         public async Task<IActionResult> UploadImage(IFormFileCollection files)
@@ -160,7 +160,7 @@ namespace SikumkumServer.Controllers
             User user = HttpContext.Session.GetObject<User>("theUser");
             //Check if user logged in and its ID is the same as the contact user ID
             if (user != null)
-            {
+            {                
                 if (files.Count <= 0)
                 {
                     return BadRequest();
