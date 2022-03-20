@@ -172,6 +172,7 @@ namespace SikumkumServer.Controllers
 
                     foreach (IFormFile file in files) 
                     {
+                        //Add find type and change directory of images or pdfs.
                         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
