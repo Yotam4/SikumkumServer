@@ -152,14 +152,15 @@ namespace SikumkumServer.Controllers
             }
         }
 
-        [Route("UploadFiles")]
+        [Route("UploadImages")]
         [HttpPost]
 
-        public async Task<IActionResult> UploadImage(IFormFileCollection files)
+        public async Task<IActionResult> UploadImages([FromForm] IFormFileCollection getFiles) //Uploads images to server.
         {
+            IFormFileCollection files = (IFormFileCollection)Request.Form.Files; //For some unfathomable reason, getFiles is empty, and this is the only way I found to get the true files.
             User user = HttpContext.Session.GetObject<User>("theUser");
             //Check if user logged in and its ID is the same as the contact user ID
-            if (user != null)
+            if (user != null) 
             {                
                 if (files.Count <= 0)
                 {
@@ -173,12 +174,55 @@ namespace SikumkumServer.Controllers
                     foreach (IFormFile file in files) 
                     {
                         //Add find type and change directory of images or pdfs.
+
                         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
                             await file.CopyToAsync(stream);
                         }
                     
+                    }
+                    return Ok(new { count = files.Count, size });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return BadRequest();
+                }
+            }
+            return Forbid();
+        }
+
+        [Route("UploadPdfs")]
+        [HttpPost]
+
+        public async Task<IActionResult> UploadPdfs(IFormFileCollection getFiles) //Uploads PDF files to server.
+        {
+            IFormFileCollection files = (IFormFileCollection)Request.Form.Files; //For some unfathomable reason, getFiles is empty, and this is the only way I found to get the true files.
+
+            User user = HttpContext.Session.GetObject<User>("theUser");
+            //Check if user logged in and its ID is the same as the contact user ID
+            if (user != null)
+            {
+                if (files.Count <= 0)
+                {
+                    return BadRequest();
+                }
+
+                try
+                {
+                    long size = files.Sum(f => f.Length);
+
+                    foreach (IFormFile file in files)
+                    {
+                        //Add find type and change directory of images or pdfs.
+
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/pdfs", file.FileName);
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
                     }
                     return Ok(new { count = files.Count, size });
                 }
