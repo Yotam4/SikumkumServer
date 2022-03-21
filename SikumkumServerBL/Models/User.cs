@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SikumkumServerBL.Models
 {
-    public partial class User
+    public partial class User //Add sikumfiles to thingy.
     {
         public int UserId { get; set; }
         public string Username { get; set; }

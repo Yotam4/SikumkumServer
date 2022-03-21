@@ -166,5 +166,39 @@ namespace SikumkumServerBL.Models
                 return null;
             }
         }
+
+        public async Task<bool> TryUploadSikumFile(SikumFileDTO fileDto, User user)
+        {
+            try
+            {
+                SikumFile uploadFile = new SikumFile
+                {
+                    Username = fileDto.Username,
+                    Headline = fileDto.Headline,
+                    Approved = false,
+                    Url = $"{fileDto.Username}-{fileDto.Headline}-",
+                    TextDesc = fileDto.TextDesc,
+                    Type = this.FileTypes.Single(t => t.TypeName == fileDto.TypeName),
+                    Year = this.StudyYears.Single(y => y.YearName == fileDto.YearName),
+                    Subject = this.Subjects.Single(s => s.SubjectName == fileDto.SubjectName),
+                };
+
+                if(uploadFile == null)
+                    return false;
+
+                user.NumUploads++;
+                this.SikumFiles.Add(uploadFile);
+                this.SaveChanges();
+                return true;
+            }
+
+            catch
+            {
+                return false;
+            }
+
+
+            
+        }
     }
 }

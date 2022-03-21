@@ -152,6 +152,39 @@ namespace SikumkumServer.Controllers
             }
         }
 
+
+        [Route ("UploadSikumFile") ]
+        [HttpPost]
+
+        public async Task<bool> UploadSikumFile([FromBody] SikumFileDTO sikumFile)
+        {
+            try
+            {
+                if (sikumFile == null)
+                    return false;
+
+                User user = HttpContext.Session.GetObject<User>("theUser");
+
+                bool uploaded = await context.TryUploadSikumFile(sikumFile, user);
+
+                if (uploaded)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                    return true;
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                    return false;
+                }
+            }
+
+            catch
+            {
+                return false;
+            }
+        }
+
         [Route("UploadImages")]
         [HttpPost]
 

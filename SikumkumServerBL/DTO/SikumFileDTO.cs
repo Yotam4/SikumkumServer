@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace SikumkumServerBL.DTO
 {
-    class SikumFileDTO
+    public class SikumFileDTO
     {
         public string Username { get; set; }
         public string TypeName { get; set; }
         public string YearName { get; set; }
+        public string SubjectName { get; set; }
         public string Headline { get; set; }
         public string TextDesc { get; set; }
         public string Url { get; set; }
 
-        public SikumFileDTO(string username, string headline, string url, string yearName, string typeName, string textDesc)
+        public SikumFileDTO(string username, string headline, string url, string yearName, string typeName, string subjectName, string textDesc)
         {
             this.Username = username;
             this.Headline = headline;
@@ -23,6 +24,7 @@ namespace SikumkumServerBL.DTO
             this.YearName = yearName;
             this.TypeName = typeName;
             this.TextDesc = textDesc;
+            this.SubjectName = subjectName;
         }
     }
 }
