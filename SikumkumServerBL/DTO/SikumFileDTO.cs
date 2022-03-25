@@ -16,6 +16,11 @@ namespace SikumkumServerBL.DTO
         public string TextDesc { get; set; }
         public string Url { get; set; }
 
+        public SikumFileDTO()
+        {
+
+        }
+
         public SikumFileDTO(string username, string headline, string url, string yearName, string typeName, string subjectName, string textDesc)
         {
             this.Username = username;

@@ -11,5 +11,7 @@ namespace SikumkumServerBL.Models
         public string SubjectName { get; set; }
 
         public virtual SikumFile SikumFile { get; set; }
+
+        public Subject() { }
     }
 }

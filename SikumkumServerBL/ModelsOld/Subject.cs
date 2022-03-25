@@ -5,13 +5,11 @@ using System.Collections.Generic;
 
 namespace SikumkumServerBL.Models
 {
-    public partial class FileType
+    public partial class Subject
     {
-        public int TypeId { get; set; }
-        public string TypeName { get; set; }
+        public int SubjectId { get; set; }
+        public string SubjectName { get; set; }
 
         public virtual SikumFile SikumFile { get; set; }
-
-        public FileType() { }
     }
 }

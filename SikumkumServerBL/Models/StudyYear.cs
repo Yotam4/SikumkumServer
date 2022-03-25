@@ -11,5 +11,7 @@ namespace SikumkumServerBL.Models
         public string YearName { get; set; }
 
         public virtual SikumFile SikumFile { get; set; }
+
+        public StudyYear() { }
     }
 }

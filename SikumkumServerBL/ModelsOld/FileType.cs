@@ -11,7 +11,5 @@ namespace SikumkumServerBL.Models
         public string TypeName { get; set; }
 
         public virtual SikumFile SikumFile { get; set; }
-
-        public FileType() { }
     }
 }

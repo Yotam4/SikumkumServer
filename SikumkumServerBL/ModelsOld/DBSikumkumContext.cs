@@ -17,11 +17,13 @@ namespace SikumkumServerBL.Models
         {
         }
 
+        public virtual DbSet<Chat> Chats { get; set; }
         public virtual DbSet<FileType> FileTypes { get; set; }
         public virtual DbSet<SikumFile> SikumFiles { get; set; }
         public virtual DbSet<StudyYear> StudyYears { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserMessage> UserMessages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +37,22 @@ namespace SikumkumServerBL.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Hebrew_CI_AS");
+
+            modelBuilder.Entity<Chat>(entity =>
+            {
+                entity.HasKey(e => e.ChatBoxId)
+                    .HasName("chats_chatboxid_primary");
+
+                entity.Property(e => e.ChatBoxId).HasColumnName("ChatBoxID");
+
+                entity.Property(e => e.ChatDesc)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.ChatTitle)
+                    .IsRequired()
+                    .HasMaxLength(255);
+            });
 
             modelBuilder.Entity<FileType>(entity =>
             {
@@ -94,6 +112,12 @@ namespace SikumkumServerBL.Models
                     .HasMaxLength(255);
 
                 entity.Property(e => e.YearId).HasColumnName("YearID");
+
+                entity.HasOne(d => d.ChatBox)
+                    .WithOne(p => p.SikumFile)
+                    .HasForeignKey<SikumFile>(d => d.ChatBoxId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("sikumfiles_chatboxid_foreign");
 
                 entity.HasOne(d => d.Subject)
                     .WithOne(p => p.SikumFile)
@@ -158,6 +182,36 @@ namespace SikumkumServerBL.Models
                 entity.Property(e => e.Username)
                     .IsRequired()
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<UserMessage>(entity =>
+            {
+                entity.HasKey(e => e.MessageId)
+                    .HasName("usermessages_messageid_primary");
+
+                entity.HasIndex(e => e.ChatBoxId, "usermessages_chatboxid_unique")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Username, "usermessages_username_unique")
+                    .IsUnique();
+
+                entity.Property(e => e.MessageId).HasColumnName("MessageID");
+
+                entity.Property(e => e.ChatBoxId).HasColumnName("ChatBoxID");
+
+                entity.Property(e => e.TextMessage)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.ChatBox)
+                    .WithOne(p => p.UserMessage)
+                    .HasForeignKey<UserMessage>(d => d.ChatBoxId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("usermessages_chatboxid_foreign");
             });
 
             OnModelCreatingPartial(modelBuilder);
