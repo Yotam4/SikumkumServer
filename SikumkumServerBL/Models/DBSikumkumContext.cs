@@ -53,24 +53,7 @@ namespace SikumkumServerBL.Models
                 entity.HasKey(e => e.FileId)
                     .HasName("sikumfiles_fileid_primary");
 
-                entity.HasIndex(e => e.ChatBoxId, "sikumfiles_chatboxid_unique")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.SubjectId, "sikumfiles_subjectid_unique")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.TypeId, "sikumfiles_typeid_unique")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Username, "sikumfiles_username_unique")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.YearId, "sikumfiles_yearid_unique")
-                    .IsUnique();
-
                 entity.Property(e => e.FileId).HasColumnName("FileID");
-
-                entity.Property(e => e.ChatBoxId).HasColumnName("ChatBoxID");
 
                 entity.Property(e => e.Headline)
                     .IsRequired()
@@ -89,27 +72,31 @@ namespace SikumkumServerBL.Models
                     .HasMaxLength(255)
                     .HasColumnName("URL");
 
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.UserId).HasColumnName("UserID");
 
                 entity.Property(e => e.YearId).HasColumnName("YearID");
 
                 entity.HasOne(d => d.Subject)
-                    .WithOne(p => p.SikumFile)
-                    .HasForeignKey<SikumFile>(d => d.SubjectId)
+                    .WithMany(p => p.SikumFiles)
+                    .HasForeignKey(d => d.SubjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("sikumfiles_subjectid_foreign");
 
                 entity.HasOne(d => d.Type)
-                    .WithOne(p => p.SikumFile)
-                    .HasForeignKey<SikumFile>(d => d.TypeId)
+                    .WithMany(p => p.SikumFiles)
+                    .HasForeignKey(d => d.TypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("sikumfiles_typeid_foreign");
 
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.SikumFiles)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("sikumfiles_userid_foreign");
+
                 entity.HasOne(d => d.Year)
-                    .WithOne(p => p.SikumFile)
-                    .HasForeignKey<SikumFile>(d => d.YearId)
+                    .WithMany(p => p.SikumFiles)
+                    .HasForeignKey(d => d.YearId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("sikumfiles_yearid_foreign");
             });
@@ -139,6 +126,12 @@ namespace SikumkumServerBL.Models
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.HasIndex(e => e.Username, "UQ__Users__536C85E42D26D3CF")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Email, "UQ__Users__A9D105343B7CFA8F")
+                    .IsUnique();
+
                 entity.HasIndex(e => e.Email, "users_email_unique")
                     .IsUnique();
 

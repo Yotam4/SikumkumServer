@@ -58,27 +58,30 @@ namespace SikumkumServer.Controllers
                 HttpContext.Session.SetObject("theUser", signedUp);
 
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-
                 return true;
             }
-
+            //Maybe add status codes that tell user if username\email was taken
             else
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                 return false;
             }
         }
-        [Route("GetSubjects")]
+        [Route("GetOpeningObject")]
         [HttpGet]
-        public async Task<List<Subject>> GetSubjects()
+        public async Task<OpeningObject> GetSubjects()
         {
-            List<Subject> subjects = context.GetAllSubjects();
+            List<SubjectDTO> subjects = await context.GetAllSubjects();
+            List<FileTypeDTO> fileTypes = await context.GetAllFileTypes();
+            List<StudyYearDTO> studyYears = await context.GetAllStudyYears();
 
-            if(subjects != null)
+            OpeningObject openingOb = new OpeningObject(subjects, fileTypes, studyYears);
+
+            if(openingOb != null)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
-                return subjects;
+                return openingOb;
             }
             else
             {
@@ -92,7 +95,7 @@ namespace SikumkumServer.Controllers
         [HttpGet]
         public async Task<List<SikumFile>> GetFiles([FromQuery] bool getSummary, [FromQuery] bool getPractice, [FromQuery] bool getEssay, [FromQuery] string subjectName)
         {
-            List<SikumFile> files = context.GetChosenFiles(getSummary, getEssay, getPractice, subjectName);
+            List<SikumFile> files = await context.GetChosenFiles(getSummary, getEssay, getPractice, subjectName);
 
             if (files != null)
             {

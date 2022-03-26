@@ -1,8 +1,8 @@
 use DBSikumkum
-INSERT INTO Users(Username, Email, IsAdmin,NumUploads, Password, Rating)
-VALUES ('yotam', 'yotam@gmail.com', 0, 0, 'banana', 0);
+INSERT INTO Users(Username, Email, IsAdmin,NumUploads, Password, UserRating)
+VALUES ('yotam', 'yotam@gmail.com', 1, 0, 'banana', 0);
 
-INSERT INTO SUBJECT(SubjectName) 
+INSERT INTO SUBJECTS(SubjectName) 
 VALUES  ('מתמטיקה'),('אנגלית'), ('פיזיקה'), ('כימיה'), ('היסטוריה'),('תנ"ך'),('עברית'),('אזרחות')
 INSERT INTO FileTypes(TypeName) 
 VALUES ('סיכום'), ('מטלה'), ('תרגול')

@@ -61,15 +61,16 @@ namespace SikumkumServerBL.Models
                 return null;
             }
         }
-        public List<Subject> GetAllSubjects() //Ask about Async.
+        public async Task<List<SubjectDTO>> GetAllSubjects() //Ask about Async.
         {
             try
             {
-                List<Subject> subjects = new List<Subject>();
+                List<SubjectDTO> subjects = new List<SubjectDTO>();
 
                 foreach (Subject s in this.Subjects)
                 {
-                    subjects.Add(s);
+                    SubjectDTO sd = new SubjectDTO(s);
+                    subjects.Add(sd);
                 }
 
                 if (subjects.Count == 0)
@@ -84,7 +85,55 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public List<SikumFile> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName)
+        public async Task<List<FileTypeDTO>> GetAllFileTypes()
+        {
+            try
+            {
+                List<FileTypeDTO> fileTypes = new List<FileTypeDTO>();
+
+                foreach (FileType f in this.FileTypes)
+                {
+                    FileTypeDTO fDTO = new FileTypeDTO(f);
+                    fileTypes.Add(fDTO);
+                }
+
+                if (fileTypes.Count == 0)
+                    return null;
+                else
+                    return fileTypes;
+            }
+
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<StudyYearDTO>> GetAllStudyYears()
+        {
+            try
+            {
+                List<StudyYearDTO> studyYears = new List<StudyYearDTO>();
+
+                foreach (StudyYear sy in this.StudyYears)
+                {
+                    StudyYearDTO syDTO = new StudyYearDTO(sy);
+                    studyYears.Add(syDTO);
+                }
+
+                if (studyYears.Count == 0)
+                    return null;
+                else
+                    return studyYears;
+            }
+
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<SikumFile>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName) //Change to work faster. Work in progress.
         {
             try
             {
@@ -124,17 +173,17 @@ namespace SikumkumServerBL.Models
         public List<SikumFile> GetUserFiles(string username) //Returns the files that contain the same username.
         {
 
-            try
+            try //Needs to be changed, Work in progress.
             {
                 List<SikumFile> userFiles = new List<SikumFile>();
 
 
-                var getUserFiles = //Find the files that match the username.
-                from file in this.SikumFiles
-                where file.Username == username
-                select file;
+                //var getUserFiles = //Find the files that match the username.
+                //from file in this.SikumFiles
+                //where file.Username == username
+                //select file;
 
-                userFiles = getUserFiles.ToList();
+                //userFiles = getUserFiles.ToList();
 
                 if (userFiles == null) //User has no files.
                     return null;
@@ -167,38 +216,48 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<bool> TryUploadSikumFile(SikumFileDTO fileDto, User user)
+        public async Task<bool> TryUploadSikumFile(SikumFileDTO fileDto, User user) 
         {
             try
             {
-                SikumFile uploadFile = new SikumFile
+                if (fileDto == null || user == null)
+                    return false;
+
+                //Getting the actual values from the DB. work in progress.
+                User realUser = this.Users.Single(u => u.UserId == user.UserId);
+
+                //Creating sikumfile.
+                SikumFile uploadFile = new SikumFile //Needs to be changed, work in progress.
                 {
-                    Username = fileDto.Username,
+                    UserId = realUser.UserId,
                     Headline = fileDto.Headline,
                     Approved = false,
                     Url = $"{fileDto.Username}-{fileDto.Headline}-",
                     TextDesc = fileDto.TextDesc,
-                    Type = this.FileTypes.Single(t => t.TypeName == fileDto.TypeName),
-                    Year = this.StudyYears.Single(y => y.YearName == fileDto.YearName),
-                    Subject = this.Subjects.Single(s => s.SubjectName == fileDto.SubjectName),
+                    TypeId = fileDto.TypeID,
+                    SubjectId = fileDto.SubjectID,
+                    YearId = fileDto.YearID,
+                    Rating = 0.00,
+                    NumRated = 0                   
                 };
 
-                if(uploadFile == null)
+                if(uploadFile == null) //upload failed.
                     return false;
 
-                user.NumUploads++;
+                realUser.NumUploads++; //Adds user's sikumfile upload num
                 this.SikumFiles.Add(uploadFile);
                 this.SaveChanges();
+
                 return true;
             }
 
-            catch
+            catch (Exception e)
             {
+                string mess = e.Message;
                 return false;
             }
-
-
-            
         }
+
+
     }
 }

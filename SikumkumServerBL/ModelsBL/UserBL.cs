@@ -8,10 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SikumkumServerBL.DTO;
 
-namespace SikumkumServerBL.ModelsBL
+namespace SikumkumServerBL.Models
 {
-    public partial class UserBL : User
+    public partial class User
     {
 
+        public User(string username, string email, string password)
+        {
+            this.Username = username;
+            this.Email = email;
+            this.Password = password;
+            this.IsAdmin = false;            
+            this.NumUploads = 0;
+            this.UserRating = 0.00;
+        }
     }
 }

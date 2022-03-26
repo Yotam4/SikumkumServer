@@ -16,6 +16,10 @@ namespace SikumkumServerBL.DTO
 
         public string Password { get; set; }
 
+        public bool IsAdmin { get; set; }
+
+        public int UserId { get; set; }
+
         public UserDTO()
         {
 
@@ -25,6 +29,8 @@ namespace SikumkumServerBL.DTO
             this.Username = u.Username;
             this.Email = u.Email;
             this.Password = u.Password;
+            this.IsAdmin = u.IsAdmin;
+            this.UserId = u.UserId;
         }
 
 
