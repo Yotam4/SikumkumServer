@@ -7,7 +7,7 @@ VALUES  ('מתמטיקה'),('אנגלית'), ('פיזיקה'), ('כימיה'), (
 INSERT INTO FileTypes(TypeName) 
 VALUES ('סיכום'), ('מטלה'), ('תרגול')
 INSERT INTO StudyYear(YearName)
-VALUES ('תיכון'), ('חטיבה'), ('יסודי'), ('אוניברסיטה')
+VALUES  ('יסודי'), ('חטיבה'), ('תיכון'), ('אוניברסיטה')
 
 --INSERT INTO FILETYPE (TypeName)
 --VALUES ('Summary'), ('Practice'), ('Essay')

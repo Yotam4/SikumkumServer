@@ -1,8 +1,8 @@
 use DBSikumkum
 CREATE TABLE "Users"(
     "UserID" INT NOT NULL Identity(1000,1),
-    "Username" NVARCHAR(255) NOT NULL UNIQUE,
-    "Email" NVARCHAR(255) NOT NULL UNIQUE,
+    "Username" NVARCHAR(255) NOT NULL,
+    "Email" NVARCHAR(255) NOT NULL,
     "IsAdmin" BIT NOT NULL,
     "NumUploads" INT NOT NULL,
     "Password" NVARCHAR(255) NOT NULL,
@@ -24,11 +24,19 @@ CREATE TABLE "SikumFiles"(
     "Headline" NVARCHAR(255) NOT NULL,
     "TextDesc" NVARCHAR(255) NOT NULL,
     "URL" NVARCHAR(255) NOT NULL,
-	"Rating" FLOAT NOT NULL,
-	"NumRated" INT NOT NULL
+    "Rating" FLOAT NOT NULL,
+    "NumRated" INT NOT NULL,
 );
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_fileid_primary" PRIMARY KEY("FileID");
+CREATE INDEX "sikumfiles_userid_unique" ON
+    "SikumFiles"("UserID");
+CREATE INDEX "sikumfiles_subjectid_unique" ON
+    "SikumFiles"("SubjectID");
+CREATE INDEX "sikumfiles_typeid_unique" ON
+    "SikumFiles"("TypeID");
+CREATE INDEX "sikumfiles_yearid_unique" ON
+    "SikumFiles"("YearID");
 
 CREATE TABLE "Subjects"(
     "SubjectID" INT NOT NULL Identity,
@@ -48,7 +56,6 @@ CREATE TABLE "StudyYear"(
 );
 ALTER TABLE
     "StudyYear" ADD CONSTRAINT "studyyear_yearid_primary" PRIMARY KEY("YearID");
-
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_userid_foreign" FOREIGN KEY("UserID") REFERENCES "Users"("UserID");
 ALTER TABLE

@@ -53,6 +53,14 @@ namespace SikumkumServerBL.Models
                 entity.HasKey(e => e.FileId)
                     .HasName("sikumfiles_fileid_primary");
 
+                entity.HasIndex(e => e.SubjectId, "sikumfiles_subjectid_unique");
+
+                entity.HasIndex(e => e.TypeId, "sikumfiles_typeid_unique");
+
+                entity.HasIndex(e => e.UserId, "sikumfiles_userid_unique");
+
+                entity.HasIndex(e => e.YearId, "sikumfiles_yearid_unique");
+
                 entity.Property(e => e.FileId).HasColumnName("FileID");
 
                 entity.Property(e => e.Headline)
@@ -126,12 +134,6 @@ namespace SikumkumServerBL.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Username, "UQ__Users__536C85E42D26D3CF")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Email, "UQ__Users__A9D105343B7CFA8F")
-                    .IsUnique();
-
                 entity.HasIndex(e => e.Email, "users_email_unique")
                     .IsUnique();
 
