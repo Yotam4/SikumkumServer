@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SikumkumServerBL.Models;
 
 namespace SikumkumServerBL.DTO
 {
@@ -30,6 +31,19 @@ namespace SikumkumServerBL.DTO
             this.TypeID = typeID;
             this.SubjectID = subjectID;
 
+        }
+
+        public SikumFileDTO(SikumFile file)
+        {
+
+            this.UserID = file.UserId;
+            this.Username = file.User.Username;
+            this.Headline = file.Headline;
+            this.TextDesc = file.TextDesc;
+            this.Url = file.Url;
+            this.YearID = file.YearId;
+            this.TypeID = file.TypeId;
+            this.SubjectID = file.SubjectId;
         }
     }
 }

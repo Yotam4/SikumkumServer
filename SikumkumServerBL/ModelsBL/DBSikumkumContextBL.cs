@@ -133,7 +133,7 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<List<SikumFile>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName, int yearID) //Change to work faster. Work in progress.
+        public async Task<List<SikumFileDTO>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName, int yearID) //Add lazy loading to remove includes.
         {
             try
             {
@@ -142,22 +142,22 @@ namespace SikumkumServerBL.Models
                 const string ESSAY_NAME = "מטלה";
                 const string PRACTICE_NAME = "תרגול";
 
-                User yotam = this.Users.Single(u => u.Username == "yotam");
-                int a = 4;
-                List<SikumFile> listsikumtry = yotam.SikumFiles.ToList();
-                //Work in progress. DB needs changes.
+
                 List<SikumFile> subjectFiles;
                 List<SikumFile> files = new List<SikumFile>();
 
-                Subject chosenSubject = this.Subjects.Single(sub => sub.SubjectName == subjectName); //Gets subject.
-
+                Subject chosenSubject = null;
+                foreach (Subject sub in this.Subjects.Include("SikumFiles.Year").Include("SikumFiles.Type").Include("SikumFiles.User") )
+                {
+                    if (sub.SubjectName == subjectName)
+                        chosenSubject = sub;
+                }
                 subjectFiles = chosenSubject.SikumFiles.ToList(); //Gets all files of the current subject.
 
 
-                
-                foreach(SikumFile file in subjectFiles)
+                foreach (SikumFile file in subjectFiles)
                 {
-                    if (file.Year.YearId == yearID) //Checks that the year is correct, if it is, keep checking.
+                    if (file.YearId == yearID) //Checks that the year is correct, if it is, keep checking.
                     {
                         if (getEssay && getPractice && getSummary) //If user chose to get all file types.                        
                             files.Add(file);   
@@ -187,7 +187,15 @@ namespace SikumkumServerBL.Models
                 if (files.Count == 0) //If there are no files.
                     return null;
 
-                return files;
+                List<SikumFileDTO> returnFiles = new List<SikumFileDTO>(); //Turns files into filedto.
+                foreach (SikumFile file in files)
+                {
+                    SikumFileDTO addFile = new SikumFileDTO(file);
+
+                    returnFiles.Add(addFile);
+                }                 
+
+                return returnFiles;
             }
 
             catch (Exception e)
@@ -246,10 +254,9 @@ namespace SikumkumServerBL.Models
 
                 //Getting the actual values from the DB of user and subject.
                 User realUser = this.Users.Single(u => u.UserId == user.UserId);
-                Subject realSubject = this.Subjects.Single(sub => sub.SubjectId == fileDto.SubjectID);
 
                 //Creating sikumfile.
-                SikumFile uploadFile = new SikumFile 
+                SikumFile uploadFile = new SikumFile //Sikumfile does not contain the actual Type,Subject,Year, only the keys. Needs fix? Work in Progress.
                 {
                     UserId = realUser.UserId,
                     Headline = fileDto.Headline,
@@ -260,7 +267,7 @@ namespace SikumkumServerBL.Models
                     SubjectId = fileDto.SubjectID,
                     YearId = fileDto.YearID,
                     Rating = 0.00,
-                    NumRated = 0                   
+                    NumRated = 0
                 };
 
                 if(uploadFile == null) //upload failed.
@@ -271,14 +278,7 @@ namespace SikumkumServerBL.Models
                 //Work in progress. DB needs changes.
                 this.SikumFiles.Add(uploadFile);
 
-                realUser.SikumFiles.Add(uploadFile);
-                realSubject.SikumFiles.Add(uploadFile);
 
-                this.Users.Update(realUser);
-                this.Subjects.Update(realSubject);
-
-                //this.Update(this.Users);
-                //this.SikumFiles.Add(uploadFile);
                 this.SaveChanges();
 
                 return true;
