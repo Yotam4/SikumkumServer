@@ -9,7 +9,7 @@ namespace SikumkumServerBL.Models
     {
         public User()
         {
-            SikumFiles = new HashSet<SikumFile>();
+            this.SikumFiles = new HashSet<SikumFile>();
         }
 
         public int UserId { get; set; }

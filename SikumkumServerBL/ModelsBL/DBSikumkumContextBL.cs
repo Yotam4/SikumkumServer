@@ -133,35 +133,61 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<List<SikumFile>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName) //Change to work faster. Work in progress.
+        public async Task<List<SikumFile>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName, int yearID) //Change to work faster. Work in progress.
         {
             try
             {
+                //Values of the names used in the database. Change here if database changes. DB CHANGE.
+                const string SUMMARY_NAME = "סיכום";
+                const string ESSAY_NAME = "מטלה";
+                const string PRACTICE_NAME = "תרגול";
+
+                User yotam = this.Users.Single(u => u.Username == "yotam");
+                int a = 4;
+                List<SikumFile> listsikumtry = yotam.SikumFiles.ToList();
+                //Work in progress. DB needs changes.
+                List<SikumFile> subjectFiles;
                 List<SikumFile> files = new List<SikumFile>();
 
-                string nameSummary = "#"; //Trash value that will never return true.
-                string nameEssay = "#";
-                string namePractice = "#";
+                Subject chosenSubject = this.Subjects.Single(sub => sub.SubjectName == subjectName); //Gets subject.
 
-                if (getSummary) //If true, add correct value to search for.
-                    nameSummary = "Summary";
-                if (getEssay)
-                    nameSummary = "Essay";
-                if (getPractice)
-                    nameSummary = "Practice";
-
-                var getCorrectFiles =
-                from file in this.SikumFiles
-                where  file.Subject.SubjectName == subjectName && (file.Type.TypeName == nameSummary || file.Type.TypeName == nameEssay || file.Type.TypeName == namePractice)
-                select file;
-
-                files = getCorrectFiles.ToList();
+                subjectFiles = chosenSubject.SikumFiles.ToList(); //Gets all files of the current subject.
 
 
-                if (files.Count == 0) //If there is nothing in the list.
+                
+                foreach(SikumFile file in subjectFiles)
+                {
+                    if (file.Year.YearId == yearID) //Checks that the year is correct, if it is, keep checking.
+                    {
+                        if (getEssay && getPractice && getSummary) //If user chose to get all file types.                        
+                            files.Add(file);   
+                        
+                        else //If user only chose some of the files types, check which ones, and if it's a match, add to file.
+                        {
+                            if (getSummary)
+                            {
+                                if (file.Type.TypeName == SUMMARY_NAME)
+                                    files.Add(file);
+                            }
+                            if (getEssay)
+                            {
+                                if (file.Type.TypeName == ESSAY_NAME)
+                                    files.Add(file);
+                            }
+                            if (getPractice)
+                            {
+                                if (file.Type.TypeName == PRACTICE_NAME)
+                                    files.Add(file);
+                            }
+                        }
+                    }
+
+                }
+
+                if (files.Count == 0) //If there are no files.
                     return null;
-                else
-                    return files;
+
+                return files;
             }
 
             catch (Exception e)
@@ -170,20 +196,15 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public List<SikumFile> GetUserFiles(string username) //Returns the files that contain the same username.
+        public async Task<List<SikumFile>> GetUserFiles(int userID) //Returns the files of the user.
         {
 
-            try //Needs to be changed, Work in progress.
+            try 
             {
-                List<SikumFile> userFiles = new List<SikumFile>();
+                User realUser = this.Users.Single(u => u.UserId == userID);
 
+                List<SikumFile> userFiles = realUser.SikumFiles.ToList();
 
-                //var getUserFiles = //Find the files that match the username.
-                //from file in this.SikumFiles
-                //where file.Username == username
-                //select file;
-
-                //userFiles = getUserFiles.ToList();
 
                 if (userFiles == null) //User has no files.
                     return null;
@@ -223,11 +244,12 @@ namespace SikumkumServerBL.Models
                 if (fileDto == null || user == null)
                     return false;
 
-                //Getting the actual values from the DB. work in progress.
+                //Getting the actual values from the DB of user and subject.
                 User realUser = this.Users.Single(u => u.UserId == user.UserId);
+                Subject realSubject = this.Subjects.Single(sub => sub.SubjectId == fileDto.SubjectID);
 
                 //Creating sikumfile.
-                SikumFile uploadFile = new SikumFile //Needs to be changed, work in progress.
+                SikumFile uploadFile = new SikumFile 
                 {
                     UserId = realUser.UserId,
                     Headline = fileDto.Headline,
@@ -245,15 +267,25 @@ namespace SikumkumServerBL.Models
                     return false;
 
                 realUser.NumUploads++; //Adds user's sikumfile upload num
+
+                //Work in progress. DB needs changes.
                 this.SikumFiles.Add(uploadFile);
+
+                realUser.SikumFiles.Add(uploadFile);
+                realSubject.SikumFiles.Add(uploadFile);
+
+                this.Users.Update(realUser);
+                this.Subjects.Update(realSubject);
+
+                //this.Update(this.Users);
+                //this.SikumFiles.Add(uploadFile);
                 this.SaveChanges();
 
                 return true;
             }
 
-            catch (Exception e)
+            catch 
             {
-                string mess = e.Message;
                 return false;
             }
         }
