@@ -14,3 +14,6 @@ VALUES  ('יסודי'), ('חטיבה'), ('תיכון'), ('אוניברסיטה')
 
 --INSERT INTO StudyYear (YearName)
 --VALUES ('High School'), ('Middle School'), ('Elementary'), ('University')
+
+--Scaffold:
+--scaffold-dbcontext "Server=localhost\sqlexpress;Database=DBSikumkum;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models –force

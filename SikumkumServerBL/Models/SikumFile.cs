@@ -18,6 +18,8 @@ namespace SikumkumServerBL.Models
         public string Url { get; set; }
         public double Rating { get; set; }
         public int NumRated { get; set; }
+        public bool HasPdf { get; set; }
+        public bool HasImage { get; set; }
 
         public virtual Subject Subject { get; set; }
         public virtual FileType Type { get; set; }

@@ -26,6 +26,8 @@ CREATE TABLE "SikumFiles"(
     "URL" NVARCHAR(255) NOT NULL,
     "Rating" FLOAT NOT NULL,
     "NumRated" INT NOT NULL,
+    "HasPdf" BIT NOT NULL,
+    "HasImage" BIT NOT NULL,
 );
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_fileid_primary" PRIMARY KEY("FileID");

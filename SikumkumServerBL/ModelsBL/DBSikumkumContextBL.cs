@@ -259,7 +259,9 @@ namespace SikumkumServerBL.Models
                     SubjectId = fileDto.SubjectID,
                     YearId = fileDto.YearID,
                     Rating = 0.00,
-                    NumRated = 0
+                    NumRated = 0,
+                    HasImage = fileDto.HasImage,
+                    HasPdf = fileDto.HasPdf
                 };
 
                 if(uploadFile == null) //upload failed.

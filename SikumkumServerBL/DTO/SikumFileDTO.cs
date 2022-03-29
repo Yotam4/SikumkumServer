@@ -19,10 +19,12 @@ namespace SikumkumServerBL.DTO
         public string Headline { get; set; }
         public string TextDesc { get; set; }
         public string Url { get; set; }
+        public bool HasPdf { get; set; }
+        public bool HasImage { get; set; }
 
         public SikumFileDTO() { }
 
-        public SikumFileDTO(int userID, string username, string headline, string url, string typeName, string yearName, int yearID, int typeID, int subjectID, string textDesc)
+        public SikumFileDTO(int userID, string username, string headline, string url, string typeName, string yearName, int yearID, int typeID, int subjectID, string textDesc, bool hasPDF, bool hasImage)
         {
             this.UserID = userID;
             this.Username = username;
@@ -34,7 +36,8 @@ namespace SikumkumServerBL.DTO
             this.YearID = yearID;
             this.TypeID = typeID;
             this.SubjectID = subjectID;
-
+            this.HasPdf = HasPdf;
+            this.HasImage = HasImage;
         }
 
         public SikumFileDTO(SikumFile file)
@@ -50,6 +53,8 @@ namespace SikumkumServerBL.DTO
             this.YearID = file.YearId;
             this.TypeID = file.TypeId;
             this.SubjectID = file.SubjectId;
+            this.HasImage = file.HasImage;
+            this.HasPdf = file.HasPdf;
         }
     }
 }
