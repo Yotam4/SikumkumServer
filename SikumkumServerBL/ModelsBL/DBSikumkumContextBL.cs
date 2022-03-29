@@ -144,7 +144,7 @@ namespace SikumkumServerBL.Models
 
 
                 List<SikumFile> subjectFiles;
-                List<SikumFile> files = new List<SikumFile>();
+                List<SikumFileDTO> returnFiles = new List<SikumFileDTO>(); //List of filesDTO to return to App.
 
                 Subject chosenSubject = null;
                 foreach (Subject sub in this.Subjects.Include("SikumFiles.Year").Include("SikumFiles.Type").Include("SikumFiles.User") )
@@ -160,40 +160,32 @@ namespace SikumkumServerBL.Models
                     if (file.YearId == yearID) //Checks that the year is correct, if it is, keep checking.
                     {
                         if (getEssay && getPractice && getSummary) //If user chose to get all file types.                        
-                            files.Add(file);   
-                        
+                            returnFiles.Add(new SikumFileDTO(file));
+
                         else //If user only chose some of the files types, check which ones, and if it's a match, add to file.
                         {
                             if (getSummary)
                             {
                                 if (file.Type.TypeName == SUMMARY_NAME)
-                                    files.Add(file);
+                                    returnFiles.Add(new SikumFileDTO(file));
                             }
                             if (getEssay)
                             {
                                 if (file.Type.TypeName == ESSAY_NAME)
-                                    files.Add(file);
+                                    returnFiles.Add(new SikumFileDTO(file));
                             }
                             if (getPractice)
                             {
                                 if (file.Type.TypeName == PRACTICE_NAME)
-                                    files.Add(file);
+                                    returnFiles.Add(new SikumFileDTO(file));
                             }
                         }
                     }
 
                 }
 
-                if (files.Count == 0) //If there are no files.
-                    return null;
-
-                List<SikumFileDTO> returnFiles = new List<SikumFileDTO>(); //Turns files into filedto.
-                foreach (SikumFile file in files)
-                {
-                    SikumFileDTO addFile = new SikumFileDTO(file);
-
-                    returnFiles.Add(addFile);
-                }                 
+                if (returnFiles.Count == 0) //If there are no files.
+                    return null;                
 
                 return returnFiles;
             }
