@@ -151,6 +151,7 @@ namespace SikumkumServerBL.Models
                 {
                     if (sub.SubjectName == subjectName)
                         chosenSubject = sub;
+                    
                 }
                 subjectFiles = chosenSubject.SikumFiles.ToList(); //Gets all files of the current subject.
 
@@ -196,7 +197,7 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<List<SikumFile>> GetUserFiles(int userID) //Returns the files of the user.
+        public async Task<List<SikumFileDTO>> GetUserFiles(int userID) //Returns the files of the user.
         {
 
             try 
@@ -205,11 +206,40 @@ namespace SikumkumServerBL.Models
 
                 List<SikumFile> userFiles = realUser.SikumFiles.ToList();
 
-
                 if (userFiles == null) //User has no files.
                     return null;
 
-                return userFiles;
+                List<SikumFileDTO> returnFiles = new List<SikumFileDTO>();
+                foreach(SikumFile sikum in userFiles)
+                {
+                    returnFiles.Add(new SikumFileDTO(sikum));
+                }
+
+
+
+                return returnFiles;
+            }
+
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<SikumFileDTO>> GetUnappFiles()
+        {
+            try
+            {
+                List<SikumFileDTO> returnFiles = new List<SikumFileDTO>();
+
+                bool falseBool = false;
+
+                foreach (SikumFile sikum in this.SikumFiles) //Adds the non-approved sikumfiles.
+                {
+                    if (sikum.Approved == false)
+                        returnFiles.Add(new SikumFileDTO(sikum));
+                }
+                return returnFiles;
             }
 
             catch
@@ -260,6 +290,7 @@ namespace SikumkumServerBL.Models
                     YearId = fileDto.YearID,
                     Rating = 0.00,
                     NumRated = 0,
+                    NumOfFiles = fileDto.NumOfFiles,
                     HasImage = fileDto.HasImage,
                     HasPdf = fileDto.HasPdf
                 };

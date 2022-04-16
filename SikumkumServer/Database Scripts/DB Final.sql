@@ -26,6 +26,7 @@ CREATE TABLE "SikumFiles"(
     "URL" NVARCHAR(255) NOT NULL,
     "Rating" FLOAT NOT NULL,
     "NumRated" INT NOT NULL,
+    "NumOfFiles" INT NOT NULL,
     "HasPdf" BIT NOT NULL,
     "HasImage" BIT NOT NULL,
 );

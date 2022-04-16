@@ -95,38 +95,82 @@ namespace SikumkumServer.Controllers
         [HttpGet]
         public async Task<List<SikumFileDTO>> GetFiles([FromQuery] bool getSummary, [FromQuery] bool getPractice, [FromQuery] bool getEssay, [FromQuery] string subjectName, [FromQuery] int yearID)
         {
-            List<SikumFileDTO> files = await context.GetChosenFiles(getSummary, getEssay, getPractice, subjectName, yearID);
-
-            if (files != null)
+            try
             {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                List<SikumFileDTO> files = await context.GetChosenFiles(getSummary, getEssay, getPractice, subjectName, yearID);
 
-                return files;
+                if (files != null)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                    return files;
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+
+                    return null;
+                }
             }
-            else
-            {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
 
+            catch
+            {
                 return null;
             }
         }
 
         [Route("GetUserFiles")]
         [HttpGet]
-        public async Task<List<SikumFile>> GetUserFiles([FromQuery] int userID)
+        public async Task<List<SikumFileDTO>> GetUserFiles([FromQuery] int userID)
         {
-            List<SikumFile> userFiles = await context.GetUserFiles(userID);
-
-            if (userFiles != null)
+            try
             {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                List<SikumFileDTO> userFiles = await context.GetUserFiles(userID);
 
-                return userFiles;
+                if (userFiles != null && userFiles.Count > 0)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                    return userFiles;
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+
+                    return null;
+                }
             }
-            else
-            {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
 
+            catch
+            {
+                return null;
+            }
+        }
+
+        [Route("GetUnapprovedFiles")]
+        [HttpPost]
+        public async Task<List<SikumFileDTO>> GetUnapprovedFiles()
+        {
+            try
+            {
+                List<SikumFileDTO> unappFiles = await context.GetUnappFiles();
+
+                if (unappFiles != null && unappFiles.Count > 0)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                    return unappFiles;
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+
+                    return null;
+                }
+            }
+
+            catch
+            {
                 return null;
             }
         }
@@ -211,10 +255,11 @@ namespace SikumkumServer.Controllers
                     {
                         //Add find type and change directory of images or pdfs.
 
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName + ".jpg");
+                        
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
-                            await file.CopyToAsync(stream);
+                            await file.CopyToAsync(stream); 
                         }
                     
                     }
@@ -270,5 +315,50 @@ namespace SikumkumServer.Controllers
             }
             return Forbid();
         }
+
+    //    [Route("GetFilesOfSikum")]
+    //    [HttpPost]
+
+    //    public async Task<List<FileInfo>> GetFilesOfSikum([FromBody] SikumFileDTO sikum)
+    //    {
+    //        User user = HttpContext.Session.GetObject<User>("theUser");
+    //        FormFileCollection files = new FormFileCollection();
+            
+
+    //        //Check if user logged in and its ID is the same as the contact user ID
+    //        if (user != null && sikum != null)
+    //        {
+
+    //            try
+    //            {
+    //                for (int i = 1; i <= sikum.NumOfFiles; i++)
+    //                {
+
+
+    //                }
+    //                foreach (IFormFile file in files)
+    //                {
+    //                    //Add find type and change directory of images or pdfs.
+
+    //                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/pdfs", file.FileName);
+    //                    using (var stream = new FileStream(path, FileMode.Create))
+    //                    {
+    //                        await file.CopyToAsync(stream);
+    //                    }
+
+    //                }
+    //                return Ok(new { count = files.Count, size });
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                Console.WriteLine(e.Message);
+    //                return BadRequest();
+    //            }
+    //        }
+    //        return Forbid();
+    //    }
+    //}
+
+
     }
 }
