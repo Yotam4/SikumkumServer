@@ -158,24 +158,24 @@ namespace SikumkumServerBL.Models
 
                 foreach (SikumFile file in subjectFiles)
                 {
-                    if (file.YearId == yearID) //Checks that the year is correct, if it is, keep checking.
+                    if (file.Approved == true && file.YearId == yearID ) //Checks that the file is approved and year is correct.
                     {
                         if (getEssay && getPractice && getSummary) //If user chose to get all file types.                        
                             returnFiles.Add(new SikumFileDTO(file));
 
                         else //If user only chose some of the files types, check which ones, and if it's a match, add to file.
                         {
-                            if (getSummary)
+                            if (getSummary) //User wants summaries.
                             {
                                 if (file.Type.TypeName == SUMMARY_NAME)
                                     returnFiles.Add(new SikumFileDTO(file));
                             }
-                            if (getEssay)
+                            if (getEssay) //User wants essays.
                             {
                                 if (file.Type.TypeName == ESSAY_NAME)
                                     returnFiles.Add(new SikumFileDTO(file));
                             }
-                            if (getPractice)
+                            if (getPractice) //User wants practices.
                             {
                                 if (file.Type.TypeName == PRACTICE_NAME)
                                     returnFiles.Add(new SikumFileDTO(file));
@@ -226,15 +226,13 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<List<SikumFileDTO>> GetUnappFiles()
+        public async Task<List<SikumFileDTO>> GetPendingFiles() //Gets all non approved files.
         {
             try
             {
                 List<SikumFileDTO> returnFiles = new List<SikumFileDTO>();
-
-                bool falseBool = false;
-
-                foreach (SikumFile sikum in this.SikumFiles) //Adds the non-approved sikumfiles.
+                var sikumFiles = this.SikumFiles.Include("Year").Include("Type").Include("User");
+                foreach (SikumFile sikum in sikumFiles) //Adds the non-approved sikumfiles.
                 {
                     if (sikum.Approved == false)
                         returnFiles.Add(new SikumFileDTO(sikum));
@@ -275,8 +273,8 @@ namespace SikumkumServerBL.Models
                     return false;
 
                 //Getting the actual values from the DB of user and subject.
-                User realUser = this.Users.Single(u => u.UserId == user.UserId);
-
+                User realUser = this.Users.Find(user.UserId);
+                int a = 4;
                 //Creating sikumfile.
                 SikumFile uploadFile = new SikumFile //Sikumfile does not contain the actual Type,Subject,Year, only the keys. Needs fix? Work in Progress.
                 {
@@ -315,6 +313,21 @@ namespace SikumkumServerBL.Models
             }
         }
 
-
+        public async Task<bool> AcceptUpload(SikumFileDTO sikum)
+        {
+            try
+            {
+                SikumFile file = this.SikumFiles.Find(sikum.FileId);
+                file.Approved = true;
+                this.SikumFiles.Update(file);
+                this.SaveChanges();
+                return true;
+            }
+            catch //Error occured. 
+            {
+                return false;
+            }
+        }
+        
     }
 }

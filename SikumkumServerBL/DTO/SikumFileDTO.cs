@@ -9,6 +9,7 @@ namespace SikumkumServerBL.DTO
 {
     public class SikumFileDTO
     {
+        public int FileId { get; set; }
         public string Username { get; set; }
         public int UserID { get; set; }
         public string TypeName { get; set; }
@@ -19,6 +20,7 @@ namespace SikumkumServerBL.DTO
         public string Headline { get; set; }
         public string TextDesc { get; set; }
         public string Url { get; set; }
+        public bool Approved { get; set; }
         public int NumOfFiles { get; set; }
         public bool HasPdf { get; set; }
         public bool HasImage { get; set; }
@@ -44,6 +46,7 @@ namespace SikumkumServerBL.DTO
 
         public SikumFileDTO(SikumFile file)
         {
+            this.FileId = file.FileId;
             this.UserID = file.UserId;
             this.Username = file.User.Username;
             this.Headline = file.Headline;
@@ -57,6 +60,7 @@ namespace SikumkumServerBL.DTO
             this.HasImage = file.HasImage;
             this.HasPdf = file.HasPdf;
             this.NumOfFiles = file.NumOfFiles;
+            this.Approved = file.Approved;
         }
     }
 }

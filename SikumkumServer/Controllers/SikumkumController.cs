@@ -147,33 +147,7 @@ namespace SikumkumServer.Controllers
             }
         }
 
-        [Route("GetUnapprovedFiles")]
-        [HttpPost]
-        public async Task<List<SikumFileDTO>> GetUnapprovedFiles()
-        {
-            try
-            {
-                List<SikumFileDTO> unappFiles = await context.GetUnappFiles();
 
-                if (unappFiles != null && unappFiles.Count > 0)
-                {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-
-                    return unappFiles;
-                }
-                else
-                {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
-
-                    return null;
-                }
-            }
-
-            catch
-            {
-                return null;
-            }
-        }
 
         [Route ("ChangePassword")]
         [HttpPost]
@@ -277,7 +251,7 @@ namespace SikumkumServer.Controllers
         [Route("UploadPdfs")]
         [HttpPost]
 
-        public async Task<IActionResult> UploadPdfs(IFormFileCollection getFiles) //Uploads PDF files to server.
+        public async Task<IActionResult> UploadPdfs([FromForm]IFormFileCollection getFiles) //Uploads PDF files to server.
         {
             IFormFileCollection files = (IFormFileCollection)Request.Form.Files; //For some unfathomable reason, getFiles is empty, and this is the only way I found to get the true files.
 
@@ -316,49 +290,57 @@ namespace SikumkumServer.Controllers
             return Forbid();
         }
 
-    //    [Route("GetFilesOfSikum")]
-    //    [HttpPost]
+        [Route("TryAcceptUpload")]
+        [HttpPost]
+        public async Task<bool> TryAcceptUpload([FromBody] SikumFileDTO sikum)
+        {
+            try
+            {
+                bool accepted = await context.AcceptUpload(sikum); 
+                if (!accepted) //If for some reason it didn't accept.
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                    return false;
+                }
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                return true;
 
-    //    public async Task<List<FileInfo>> GetFilesOfSikum([FromBody] SikumFileDTO sikum)
-    //    {
-    //        User user = HttpContext.Session.GetObject<User>("theUser");
-    //        FormFileCollection files = new FormFileCollection();
-            
+            }
+            catch
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return false;
+            }
+        }
 
-    //        //Check if user logged in and its ID is the same as the contact user ID
-    //        if (user != null && sikum != null)
-    //        {
+        [Route("GetPendingFiles")]
+        [HttpGet]
+        public async Task<List<SikumFileDTO>> GetPendingFiles()
+        {
+            try
+            {
+                List<SikumFileDTO> unappFiles = await context.GetPendingFiles(); 
 
-    //            try
-    //            {
-    //                for (int i = 1; i <= sikum.NumOfFiles; i++)
-    //                {
+                if (unappFiles != null && unappFiles.Count > 0)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
+                    return unappFiles;
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
 
-    //                }
-    //                foreach (IFormFile file in files)
-    //                {
-    //                    //Add find type and change directory of images or pdfs.
+                    return null;
+                }
+            }
 
-    //                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/pdfs", file.FileName);
-    //                    using (var stream = new FileStream(path, FileMode.Create))
-    //                    {
-    //                        await file.CopyToAsync(stream);
-    //                    }
-
-    //                }
-    //                return Ok(new { count = files.Count, size });
-    //            }
-    //            catch (Exception e)
-    //            {
-    //                Console.WriteLine(e.Message);
-    //                return BadRequest();
-    //            }
-    //        }
-    //        return Forbid();
-    //    }
-    //}
-
+            catch
+            {
+                return null;
+            }
+        }
 
     }
+    
 }
