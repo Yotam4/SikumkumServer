@@ -133,7 +133,7 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<List<SikumFileDTO>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName, int yearID) //Add lazy loading to remove includes.
+        public async Task<List<SikumFileDTO>> GetChosenFiles(bool getSummary, bool getEssay, bool getPractice, string subjectName, int yearID, string headlineSearch) //Add lazy loading to remove includes.
         {
             try
             {
@@ -158,7 +158,7 @@ namespace SikumkumServerBL.Models
 
                 foreach (SikumFile file in subjectFiles)
                 {
-                    if (file.Approved == true && file.YearId == yearID ) //Checks that the file is approved and year is correct.
+                    if (file.Approved == true && file.YearId == yearID && DoesContainHeadline(headlineSearch, file.Headline) ) //Checks that the file is approved and year is correct.
                     {
                         if (getEssay && getPractice && getSummary) //If user chose to get all file types.                        
                             returnFiles.Add(new SikumFileDTO(file));
@@ -195,6 +195,17 @@ namespace SikumkumServerBL.Models
             {
                 return null;
             }
+        }
+        private bool DoesContainHeadline(string headlineSearch, string headline) //returns true if headline contains the headline search, or if user didn't search for anything.
+        {
+            if (headlineSearch == "" || headlineSearch == null) //If user didn't search for anything in particular.
+                return true;
+
+            if (headline.Contains(headlineSearch))
+                return true;
+
+            return false;
+
         }
 
         public async Task<List<SikumFileDTO>> GetUserFiles(int userID) //Returns the files of the user.
