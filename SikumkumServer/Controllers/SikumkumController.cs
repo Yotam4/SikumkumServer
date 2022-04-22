@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using SikumkumServerBL.Models;
 using System.IO;
-using Microsoft.Extensions.DependencyInjection;
 using SikumkumServerBL.DTO;
 
 namespace SikumkumServer.Controllers
@@ -318,7 +317,7 @@ namespace SikumkumServer.Controllers
         public async Task<List<SikumFileDTO>> GetPendingFiles()
         {
             try
-            {
+            {                
                 List<SikumFileDTO> unappFiles = await context.GetPendingFiles(); 
 
                 if (unappFiles != null && unappFiles.Count > 0)
@@ -341,6 +340,50 @@ namespace SikumkumServer.Controllers
             }
         }
 
+        [Route("DeleteSikumFile")]
+        [HttpPost]
+        public async Task<bool> DeleteSikumFile(SikumFileDTO sikum)
+        {
+            try
+            {
+                bool sikumDeleted = await context.TryDeleteSikumFile(sikum);
+
+
+                if (sikumDeleted == false)
+                {  //Sikum was not deleted.
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                    return false;
+                }
+
+                const string IMAGES = "images";
+                const string PDFS = "pdfs";
+                string addJPG = ""; //Stays empty unless file is an image.
+                string fileContains = ""; //Set what the file contains for settings correct path.
+
+                if (sikum.HasImage)
+                {
+                    fileContains = IMAGES;
+                    addJPG = ".jpg";
+                }
+                if(sikum.HasPdf)
+                    fileContains = PDFS;
+
+                for (int i = 1; i <= sikum.NumOfFiles; i++) //Deletes all correspanding images/pdfs.
+                {
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/" + fileContains), (sikum.Url + i + addJPG));
+                     //File is a controller method, so we need to specify the system.io.
+                        System.IO.File.Delete(path);
+
+                }
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK; //Everything was deleted correctly.
+                return true;
+            }
+
+            catch
+            {
+                return false;
+            }
+        }
     }
     
 }

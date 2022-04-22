@@ -339,6 +339,24 @@ namespace SikumkumServerBL.Models
                 return false;
             }
         }
+        public async Task<bool> TryDeleteSikumFile(SikumFileDTO sikum)
+        {
+            try
+            {
+                SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
+
+                if (realFile == null)
+                    return false;
+
+                this.SikumFiles.Remove(realFile);
+                this.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         
     }
 }
