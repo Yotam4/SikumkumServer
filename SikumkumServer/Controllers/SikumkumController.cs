@@ -318,17 +318,17 @@ namespace SikumkumServer.Controllers
         {
             try
             {                
-                List<SikumFileDTO> unappFiles = await context.GetPendingFiles(); 
+                List<SikumFileDTO> unappFiles = await context.GetPendingFiles(); //Gets pending files
 
-                if (unappFiles != null && unappFiles.Count > 0)
+                if (unappFiles != null && unappFiles.Count > 0) //If some are found.
                 {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
                     return unappFiles;
                 }
-                else
+                else //If none are found.
                 {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent; 
 
                     return null;
                 }
@@ -346,15 +346,16 @@ namespace SikumkumServer.Controllers
         {
             try
             {
-                bool sikumDeleted = await context.TryDeleteSikumFile(sikum);
+                bool sikumDeleted = await context.TryDeleteSikumFile(sikum); //Deletes the sikum files from database.
 
 
-                if (sikumDeleted == false)
-                {  //Sikum was not deleted.
+                if (sikumDeleted == false) //Sikum was not deleted.
+                {  
                     Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
                     return false;
                 }
 
+                //Continues to delete the other files associated with the sikumfile.
                 const string IMAGES = "images";
                 const string PDFS = "pdfs";
                 string addJPG = ""; //Stays empty unless file is an image.
@@ -382,6 +383,59 @@ namespace SikumkumServer.Controllers
             catch
             {
                 return false;
+            }
+        }
+
+        [Route("UpdateSikum")]
+        [HttpPost]
+        public async Task<bool> UpdateSikum([FromBody] SikumFileDTO sikum)
+        {
+            try
+            {
+                bool updated = await context.UpdateSikum(sikum);
+                if (!updated) //If it did not update
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                    return false;
+                }
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                return true;
+
+            }
+            catch
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return false;
+            }
+        }
+
+
+        [Route("AddRating")]
+        [HttpPost]
+        public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Database needs rework for this to be useable.
+            //There is no way to see if the user already rated that sikum. needs to add another table, and I don't wanna do it right now. so i wont.
+        {
+            try
+            {
+                if (sikum == null)
+                    return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+
+                double newRating = await context.AddRating(sikum, addRating);
+
+                if (newRating >= 0.00)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                    return newRating;
+                }
+                else
+                {
+                    return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                }
+            }
+
+            catch
+            {
+                return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }
         }
     }

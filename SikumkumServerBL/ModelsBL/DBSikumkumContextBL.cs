@@ -287,7 +287,7 @@ namespace SikumkumServerBL.Models
                 User realUser = this.Users.Find(user.UserId);
                 int a = 4;
                 //Creating sikumfile.
-                SikumFile uploadFile = new SikumFile //Sikumfile does not contain the actual Type,Subject,Year, only the keys. Needs fix? Work in Progress.
+                SikumFile uploadFile = new SikumFile 
                 {
                     UserId = realUser.UserId,
                     Headline = fileDto.Headline,
@@ -309,7 +309,6 @@ namespace SikumkumServerBL.Models
 
                 realUser.NumUploads++; //Adds user's sikumfile upload num
 
-                //Work in progress. DB needs changes.
                 this.SikumFiles.Add(uploadFile);
 
 
@@ -357,6 +356,58 @@ namespace SikumkumServerBL.Models
                 return false;
             }
         }
-        
+
+        public async Task<bool> UpdateSikum(SikumFileDTO sikum)//Might need approval of changes, but again, kinda pointless, and just more work for Admins and me. 
+            //Function might not be needed.
+        {
+            try
+            {
+                SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
+
+                if (realFile == null)
+                    return false;
+
+                realFile.TextDesc = sikum.TextDesc; // Some more changes can be made, but there is really no point in changing anything but the description.
+
+
+                this.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Needs to have a way to save which users already rated. Meaning database changes are needed. Work in progress.
+        {
+            const int FAILED = -1;//Negative number to indicate that operation failed.
+            try
+            {
+
+                SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
+
+                if (realFile == null)
+                    return FAILED;
+
+                if (realFile.NumRated == 0) //If this is the first time the file is rated, set it to the rating.
+                    realFile.Rating = addRating;
+                else
+                {
+                    double newRating = ((realFile.Rating * realFile.NumRated) + addRating) * (realFile.NumRated + 1); //The new average files rating.
+                    realFile.Rating = newRating;
+                }
+
+                realFile.NumRated++;
+
+                this.SaveChanges();
+                return realFile.Rating;
+            }
+            catch
+            {
+                return FAILED;
+            }
+        }
     }
+
 }
