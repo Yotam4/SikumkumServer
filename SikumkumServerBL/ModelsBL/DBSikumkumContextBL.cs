@@ -257,7 +257,7 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public User ChangeUserPassword(UserDTO newUserPass) //Changes users password.
+        public async Task<User> ChangeUserPassword(UserDTO newUserPass) //Changes users password.
         {
             try
             {
@@ -287,19 +287,23 @@ namespace SikumkumServerBL.Models
                 User realUser = this.Users.Find(user.UserId);
                 int a = 4;
                 //Creating sikumfile.
-                SikumFile uploadFile = new SikumFile 
+                SikumFile uploadFile = new SikumFile //Constructor of SikumFike. Could be changed to normal constructor if I ever need to.
                 {
+                    //Creates new lists of Messages and Ratings.
+                    Messages = new List<Message>(), 
+                    Ratings = new List<Rating>(),
+
                     UserId = realUser.UserId,
                     Headline = fileDto.Headline,
-                    Approved = false,
-                    Url = $"{fileDto.Username}-{fileDto.Headline}-",
+                    Approved = false, //to approve upload to app.
+                    Disapproved = false, //Disapproved is when the admin disapproves but lets the user know why before deleting the sikum.
+                    Url = $"{fileDto.Username}-{fileDto.Headline}-", //Base URL for images, after the second - the number of the file appears. Example: yotam-fakeheadline-1. yotam-fakeheadline-2.
                     TextDesc = fileDto.TextDesc,
                     TypeId = fileDto.TypeID,
                     SubjectId = fileDto.SubjectID,
                     YearId = fileDto.YearID,
-                    Rating = 0.00,
-                    NumRated = 0,
-                    NumOfFiles = fileDto.NumOfFiles,
+                    FileRating = 0.00, //Sets it as zero before it is rated.                    
+                    NumOfFiles = fileDto.NumOfFiles, //Num of files (Images/Pdf's etc) uploaded to server.
                     HasImage = fileDto.HasImage,
                     HasPdf = fileDto.HasPdf
                 };
@@ -307,9 +311,9 @@ namespace SikumkumServerBL.Models
                 if(uploadFile == null) //upload failed.
                     return false;
 
-                realUser.NumUploads++; //Adds user's sikumfile upload num
 
                 this.SikumFiles.Add(uploadFile);
+                realUser.NumUploads++; //Adds user's sikumfile upload num. Equals to User's sikumfiles count.
 
 
                 this.SaveChanges();
@@ -379,35 +383,35 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Needs to have a way to save which users already rated. Meaning database changes are needed. Work in progress.
-        {
-            const int FAILED = -1;//Negative number to indicate that operation failed.
-            try
-            {
+        //public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Needs to have a way to save which users already rated. Meaning database changes are needed. Work in progress.
+        //{
+        //    const int FAILED = -1;//Negative number to indicate that operation failed.
+        //    try
+        //    {
 
-                SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
+        //        SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
 
-                if (realFile == null)
-                    return FAILED;
+        //        if (realFile == null)
+        //            return FAILED;
 
-                if (realFile.NumRated == 0) //If this is the first time the file is rated, set it to the rating.
-                    realFile.Rating = addRating;
-                else
-                {
-                    double newRating = ((realFile.Rating * realFile.NumRated) + addRating) * (realFile.NumRated + 1); //The new average files rating.
-                    realFile.Rating = newRating;
-                }
+        //        if (realFile.NumRated == 0) //If this is the first time the file is rated, set it to the rating.
+        //            realFile.Rating = addRating;
+        //        else
+        //        {
+        //            double newRating = ((realFile.Rating * realFile.NumRated) + addRating) * (realFile.NumRated + 1); //The new average files rating.
+        //            realFile.Rating = newRating;
+        //        }
 
-                realFile.NumRated++;
+        //        realFile.NumRated++;
 
-                this.SaveChanges();
-                return realFile.Rating;
-            }
-            catch
-            {
-                return FAILED;
-            }
-        }
+        //        this.SaveChanges();
+        //        return realFile.Rating;
+        //    }
+        //    catch
+        //    {
+        //        return FAILED;
+        //    }
+        //}
     }
 
 }

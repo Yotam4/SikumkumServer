@@ -18,6 +18,8 @@ namespace SikumkumServerBL.Models
         }
 
         public virtual DbSet<FileType> FileTypes { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<Rating> Ratings { get; set; }
         public virtual DbSet<SikumFile> SikumFiles { get; set; }
         public virtual DbSet<StudyYear> StudyYears { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
@@ -48,18 +50,69 @@ namespace SikumkumServerBL.Models
                     .HasMaxLength(255);
             });
 
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.ToTable("Message");
+
+                entity.Property(e => e.MessageId).HasColumnName("MessageID");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.FileId).HasColumnName("FileID");
+
+                entity.Property(e => e.Message1)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("Message");
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.File)
+                    .WithMany(p => p.Messages)
+                    .HasForeignKey(d => d.FileId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("message_fileid_foreign");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Messages)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("message_userid_foreign");
+            });
+
+            modelBuilder.Entity<Rating>(entity =>
+            {
+                entity.ToTable("Rating");
+
+                entity.Property(e => e.RatingId).HasColumnName("RatingID");
+
+                entity.Property(e => e.FileId).HasColumnName("FileID");
+
+                entity.Property(e => e.Rating1).HasColumnName("Rating");
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.HasOne(d => d.File)
+                    .WithMany(p => p.Ratings)
+                    .HasForeignKey(d => d.FileId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("rating_fileid_foreign");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Ratings)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("rating_userid_foreign");
+            });
+
             modelBuilder.Entity<SikumFile>(entity =>
             {
                 entity.HasKey(e => e.FileId)
                     .HasName("sikumfiles_fileid_primary");
-
-                entity.HasIndex(e => e.SubjectId, "sikumfiles_subjectid_unique");
-
-                entity.HasIndex(e => e.TypeId, "sikumfiles_typeid_unique");
-
-                entity.HasIndex(e => e.UserId, "sikumfiles_userid_unique");
-
-                entity.HasIndex(e => e.YearId, "sikumfiles_yearid_unique");
 
                 entity.Property(e => e.FileId).HasColumnName("FileID");
 

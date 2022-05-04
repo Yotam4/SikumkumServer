@@ -155,7 +155,7 @@ namespace SikumkumServer.Controllers
             if (newUserPass == null)
                 return false;
 
-            User newUser = context.ChangeUserPassword(newUserPass); //Should be awaitable?
+            User newUser = await context.ChangeUserPassword(newUserPass); //Should be awaitable?
             if (newUser != null)
             {
                 HttpContext.Session.SetObject("theUser", newUser); //Set new user to the session.
@@ -410,34 +410,34 @@ namespace SikumkumServer.Controllers
         }
 
 
-        [Route("AddRating")]
-        [HttpPost]
-        public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Database needs rework for this to be useable.
-            //There is no way to see if the user already rated that sikum. needs to add another table, and I don't wanna do it right now. so i wont.
-        {
-            try
-            {
-                if (sikum == null)
-                    return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+        //[Route("AddRating")]
+        //[HttpPost]
+        //public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Database needs rework for this to be useable.
+        //    //There is no way to see if the user already rated that sikum. needs to add another table, and I don't wanna do it right now. so i wont.
+        //{
+        //    try
+        //    {
+        //        if (sikum == null)
+        //            return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
 
-                double newRating = await context.AddRating(sikum, addRating);
+        //        double newRating = await context.AddRating(sikum, addRating);
 
-                if (newRating >= 0.00)
-                {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                    return newRating;
-                }
-                else
-                {
-                    return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                }
-            }
+        //        if (newRating >= 0.00)
+        //        {
+        //            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+        //            return newRating;
+        //        }
+        //        else
+        //        {
+        //            return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+        //        }
+        //    }
 
-            catch
-            {
-                return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-            }
-        }
+        //    catch
+        //    {
+        //        return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+        //    }
+        //}
     }
     
 }

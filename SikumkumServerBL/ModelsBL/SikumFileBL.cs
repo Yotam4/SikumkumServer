@@ -11,11 +11,6 @@ namespace SikumkumServerBL.Models
     {
         public SikumFile() { }
 
-        public SikumFile(SikumFileDTO uploadFile)
-        {
-            this.Headline = uploadFile.Headline;
-            this.Approved = false;
-            
-        }
+
     }
 }

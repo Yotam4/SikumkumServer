@@ -9,6 +9,8 @@ namespace SikumkumServerBL.Models
     {
         public User()
         {
+            Messages = new HashSet<Message>();
+            Ratings = new HashSet<Rating>();
             SikumFiles = new HashSet<SikumFile>();
         }
 
@@ -20,6 +22,8 @@ namespace SikumkumServerBL.Models
         public string Password { get; set; }
         public double UserRating { get; set; }
 
+        public virtual ICollection<Message> Messages { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; }
         public virtual ICollection<SikumFile> SikumFiles { get; set; }
     }
 }
