@@ -208,14 +208,36 @@ namespace SikumkumServerBL.Models
 
         }
 
-        public async Task<List<SikumFileDTO>> GetUserFiles(int userID) //Returns the files of the user.
+        public async Task<List<SikumFileDTO>> GetUserFiles(int userID, int isApproved ) //Returns the files of the user.
         {
-
-            try 
+            
+            
+            try
             {
-                User realUser = this.Users.Single(u => u.UserId == userID);
+                User realUser = new User();
+                foreach (User u in this.Users.Include("SikumFiles.Year").Include("SikumFiles.Type").Include("SikumFiles.Subject"))
+                {
+                    if (u.UserId == userID)
+                    {
+                        realUser = u;
+                        break;
+                    }
+                }
+                if (realUser.UserId != userID) //Didn't find the right user. 
+                    return null;
 
-                List<SikumFile> userFiles = realUser.SikumFiles.ToList();
+                List<SikumFile> userFiles = new List<SikumFile>();
+                foreach (var sikum in realUser.SikumFiles)
+                {
+                    if (isApproved == 0 && sikum.Approved == false) //If isApproved = 0, get files that are not approved. 
+                    {
+                        userFiles.Add(sikum);
+                    }
+                    if (isApproved == 1 && sikum.Approved == true)//If isApproved = 1, gett files that are approved.
+                    {
+                        userFiles.Add(sikum);
+                    }
+                }
 
                 if (userFiles == null) //User has no files.
                     return null;
@@ -226,8 +248,7 @@ namespace SikumkumServerBL.Models
                     returnFiles.Add(new SikumFileDTO(sikum));
                 }
 
-
-
+ 
                 return returnFiles;
             }
 

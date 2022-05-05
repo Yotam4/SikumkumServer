@@ -120,11 +120,11 @@ namespace SikumkumServer.Controllers
 
         [Route("GetUserFiles")]
         [HttpGet]
-        public async Task<List<SikumFileDTO>> GetUserFiles([FromQuery] int userID)
+        public async Task<List<SikumFileDTO>> GetUserFiles([FromQuery] int userID, [FromQuery] int isApproved)
         {
             try
             {
-                List<SikumFileDTO> userFiles = await context.GetUserFiles(userID);
+                List<SikumFileDTO> userFiles = await context.GetUserFiles(userID, isApproved);
 
                 if (userFiles != null && userFiles.Count > 0)
                 {
