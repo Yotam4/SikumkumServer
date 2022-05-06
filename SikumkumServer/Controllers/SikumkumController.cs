@@ -28,21 +28,61 @@ namespace SikumkumServer.Controllers
         [HttpGet] //Change to post.
         public async Task<UserDTO> Login([FromQuery] string username, [FromQuery] string pass)
         {
-            UserDTO user = await context.Login(username, pass);
-            
-            if(user != null)
+            try
             {
-                HttpContext.Session.SetObject("theUser", user);
+                UserDTO user = await context.Login(username, pass);
 
-                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                if (user != null)
+                {
+                    HttpContext.Session.SetObject("theUser", user);
 
-                return user; 
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                    return user;
+                }
+
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                    return null;
+                }
             }
 
-            else
+            catch
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                 return null;
+            }
+        }
+
+        [Route("Logout")]
+        [HttpPost] 
+        public async Task<bool> Logout([FromBody] UserDTO user)
+        {
+            try
+            {
+                User realUser = await context.Users.FindAsync(user.UserId);
+
+                if (realUser != null)
+                {
+                    HttpContext.Session.Remove("theUser");
+
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                    return true;
+                }
+
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+                    return false;
+                }
+            }
+
+            catch
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+                return false;
             }
         }
 
