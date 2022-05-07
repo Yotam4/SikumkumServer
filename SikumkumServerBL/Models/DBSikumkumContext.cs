@@ -120,6 +120,10 @@ namespace SikumkumServerBL.Models
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.PdfFileName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
                 entity.Property(e => e.SubjectId).HasColumnName("SubjectID");
 
                 entity.Property(e => e.TextDesc)

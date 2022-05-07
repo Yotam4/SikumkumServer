@@ -326,7 +326,9 @@ namespace SikumkumServerBL.Models
                     FileRating = 0.00, //Sets it as zero before it is rated.                    
                     NumOfFiles = fileDto.NumOfFiles, //Num of files (Images/Pdf's etc) uploaded to server.
                     HasImage = fileDto.HasImage,
-                    HasPdf = fileDto.HasPdf
+                    HasPdf = fileDto.HasPdf,
+                    PdfFileName = fileDto.PdfFileName
+                    
                 };
 
                 if(uploadFile == null) //upload failed.

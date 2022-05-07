@@ -27,6 +27,7 @@ namespace SikumkumServerBL.Models
         public int NumOfFiles { get; set; }
         public bool HasImage { get; set; }
         public bool HasPdf { get; set; }
+        public string PdfFileName { get; set; }
 
         public virtual Subject Subject { get; set; }
         public virtual FileType Type { get; set; }

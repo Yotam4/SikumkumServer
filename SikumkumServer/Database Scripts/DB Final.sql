@@ -28,7 +28,8 @@ CREATE TABLE "SikumFiles"(
     "FileRating" FLOAT NOT NULL,
     "NumOfFiles" INT NOT NULL,
     "HasImage" BIT NOT NULL,
-    "HasPdf" BIT NOT NULL
+    "HasPdf" BIT NOT NULL,
+    "PdfFileName" NVARCHAR(255) NOT NULL
 );
 ALTER TABLE
     "SikumFiles" ADD CONSTRAINT "sikumfiles_fileid_primary" PRIMARY KEY("FileID");

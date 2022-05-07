@@ -19,8 +19,8 @@ namespace SikumkumServer.Controllers
         public SikumkumController(DBSikumkumContext context)
         {
             this.context = context;
-            
-            
+
+
         }
 
 
@@ -56,7 +56,7 @@ namespace SikumkumServer.Controllers
         }
 
         [Route("Logout")]
-        [HttpPost] 
+        [HttpPost]
         public async Task<bool> Logout([FromBody] UserDTO user)
         {
             try
@@ -92,7 +92,7 @@ namespace SikumkumServer.Controllers
         {
             User signedUp = await context.SignUp(userDTO);
 
-            if(signedUp != null)
+            if (signedUp != null)
             {
                 HttpContext.Session.SetObject("theUser", signedUp);
 
@@ -116,7 +116,7 @@ namespace SikumkumServer.Controllers
 
             OpeningObject openingOb = new OpeningObject(subjects, fileTypes, studyYears);
 
-            if(openingOb != null)
+            if (openingOb != null)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
@@ -188,7 +188,7 @@ namespace SikumkumServer.Controllers
 
 
 
-        [Route ("ChangePassword")]
+        [Route("ChangePassword")]
         [HttpPost]
         public async Task<bool> ChangePassword([FromBody] UserDTO newUserPass)
         {
@@ -213,7 +213,7 @@ namespace SikumkumServer.Controllers
         }
 
 
-        [Route ("UploadSikumFile") ]
+        [Route("UploadSikumFile")]
         [HttpPost]
 
         public async Task<bool> UploadSikumFile([FromBody] SikumFileDTO sikumFile)
@@ -253,8 +253,8 @@ namespace SikumkumServer.Controllers
             IFormFileCollection files = (IFormFileCollection)Request.Form.Files; //For some unfathomable reason, getFiles is empty, and this is the only way I found to get the true files.
             User user = HttpContext.Session.GetObject<User>("theUser");
             //Check if user logged in and its ID is the same as the contact user ID
-            if (user != null) 
-            {                
+            if (user != null)
+            {
                 if (files.Count <= 0)
                 {
                     return BadRequest();
@@ -264,17 +264,17 @@ namespace SikumkumServer.Controllers
                 {
                     long size = files.Sum(f => f.Length);
 
-                    foreach (IFormFile file in files) 
+                    foreach (IFormFile file in files)
                     {
                         //Add find type and change directory of images or pdfs.
 
                         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName + ".jpg");
-                        
+
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
-                            await file.CopyToAsync(stream); 
+                            await file.CopyToAsync(stream);
                         }
-                    
+
                     }
                     return Ok(new { count = files.Count, size });
                 }
@@ -290,7 +290,7 @@ namespace SikumkumServer.Controllers
         [Route("UploadPdfs")]
         [HttpPost]
 
-        public async Task<IActionResult> UploadPdfs([FromForm]IFormFileCollection getFiles) //Uploads PDF files to server.
+        public async Task<IActionResult> UploadPdfs([FromForm] IFormFileCollection getFiles) //Uploads PDF files to server.
         {
             IFormFileCollection files = (IFormFileCollection)Request.Form.Files; //For some unfathomable reason, getFiles is empty, and this is the only way I found to get the true files.
 
@@ -311,7 +311,8 @@ namespace SikumkumServer.Controllers
                     {
                         //Add find type and change directory of images or pdfs.
 
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/pdfs", file.FileName);
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/pdfs", file.FileName + ".pdf");
+
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
                             await file.CopyToAsync(stream);
@@ -335,7 +336,7 @@ namespace SikumkumServer.Controllers
         {
             try
             {
-                bool accepted = await context.AcceptUpload(sikum); 
+                bool accepted = await context.AcceptUpload(sikum);
                 if (!accepted) //If for some reason it didn't accept.
                 {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
@@ -357,7 +358,7 @@ namespace SikumkumServer.Controllers
         public async Task<List<SikumFileDTO>> GetPendingFiles()
         {
             try
-            {                
+            {
                 List<SikumFileDTO> unappFiles = await context.GetPendingFiles(); //Gets pending files
 
                 if (unappFiles != null && unappFiles.Count > 0) //If some are found.
@@ -368,7 +369,7 @@ namespace SikumkumServer.Controllers
                 }
                 else //If none are found.
                 {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent; 
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
 
                     return null;
                 }
@@ -390,7 +391,7 @@ namespace SikumkumServer.Controllers
 
 
                 if (sikumDeleted == false) //Sikum was not deleted.
-                {  
+                {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
                     return false;
                 }
@@ -398,22 +399,25 @@ namespace SikumkumServer.Controllers
                 //Continues to delete the other files associated with the sikumfile.
                 const string IMAGES = "images";
                 const string PDFS = "pdfs";
-                string addJPG = ""; //Stays empty unless file is an image.
+                string addEnding = ""; //Stays empty unless file is an image.
                 string fileContains = ""; //Set what the file contains for settings correct path.
 
                 if (sikum.HasImage)
                 {
                     fileContains = IMAGES;
-                    addJPG = ".jpg";
+                    addEnding = ".jpg";
                 }
-                if(sikum.HasPdf)
+                if (sikum.HasPdf)
+                {
                     fileContains = PDFS;
+                    addEnding = ".pdf";
+                }
 
                 for (int i = 1; i <= sikum.NumOfFiles; i++) //Deletes all correspanding images/pdfs.
                 {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/" + fileContains), (sikum.Url + i + addJPG));
-                     //File is a controller method, so we need to specify the system.io.
-                        System.IO.File.Delete(path);
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), ("wwwroot/" + fileContains), (sikum.Url + i + addEnding));
+                    //File is a controller method, so we need to specify the system.io.
+                    System.IO.File.Delete(path);
 
                 }
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK; //Everything was deleted correctly.
@@ -479,5 +483,5 @@ namespace SikumkumServer.Controllers
         //    }
         //}
     }
-    
+
 }
