@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace SikumkumServerBL.Models
+namespace SikumkumServerBL.DTO
 {
-    public partial class Rating
+    public class RatingDTO
     {
         public int RatingId { get; set; }
         public int FileId { get; set; }
         public int UserId { get; set; }
         public double RatingGiven { get; set; }
 
-        public virtual SikumFile File { get; set; }
-        public virtual User User { get; set; }
+        public RatingDTO() { }
     }
 }

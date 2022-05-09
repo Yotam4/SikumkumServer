@@ -9,12 +9,12 @@ namespace SikumkumServerBL.Models
     {
         public StudyYear()
         {
-            SikumFiles = new HashSet<SikumFile>();
+            SikumFiles = new List<SikumFile>();
         }
 
         public int YearId { get; set; }
         public string YearName { get; set; }
 
-        public virtual ICollection<SikumFile> SikumFiles { get; set; }
+        public virtual List<SikumFile> SikumFiles { get; set; }
     }
 }

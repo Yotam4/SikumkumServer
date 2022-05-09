@@ -353,6 +353,29 @@ namespace SikumkumServer.Controllers
             }
         }
 
+        [Route("TryRejectUpload")]
+        [HttpPost]
+        public async Task<bool> TryRejectUpload([FromBody] SikumFileDTO sikum)
+        {
+            try
+            {
+                bool accepted = await context.RejectUpload(sikum);
+                if (!accepted) //If for some reason it didn't accept.
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                    return false;
+                }
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                return true;
+
+            }
+            catch
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return false;
+            }
+        }
+
         [Route("GetPendingFiles")]
         [HttpGet]
         public async Task<List<SikumFileDTO>> GetPendingFiles()
@@ -454,34 +477,33 @@ namespace SikumkumServer.Controllers
         }
 
 
-        //[Route("AddRating")]
-        //[HttpPost]
-        //public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Database needs rework for this to be useable.
-        //    //There is no way to see if the user already rated that sikum. needs to add another table, and I don't wanna do it right now. so i wont.
-        //{
-        //    try
-        //    {
-        //        if (sikum == null)
-        //            return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+        [Route("AddRating")]
+        [HttpPost]
+        public async Task<double> AddRating([FromBody] RatingDTO newRating)                                                                            
+        {
+            try
+            {
+                if (newRating == null)
+                    return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
 
-        //        double newRating = await context.AddRating(sikum, addRating);
+                double newTotalRating = await context.AddRating(newRating);
 
-        //        if (newRating >= 0.00)
-        //        {
-        //            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-        //            return newRating;
-        //        }
-        //        else
-        //        {
-        //            return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-        //        }
-        //    }
+                if (newTotalRating >= 0.00)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                    return newTotalRating;
+                }
+                else
+                {
+                    return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                }
+            }
 
-        //    catch
-        //    {
-        //        return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-        //    }
-        //}
+            catch
+            {
+                return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            }
+        }
     }
 
 }

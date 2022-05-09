@@ -365,6 +365,22 @@ namespace SikumkumServerBL.Models
                 return false;
             }
         }
+
+        public async Task<bool> RejectUpload(SikumFileDTO sikum) //Rejects an upload.
+        {
+            try
+            {
+                SikumFile file = this.SikumFiles.Find(sikum.FileId);
+                file.Disapproved = true;
+                this.SikumFiles.Update(file);
+                this.SaveChanges();
+                return true;
+            }
+            catch //Error occured. 
+            {
+                return false;
+            }
+        }
         public async Task<bool> TryDeleteSikumFile(SikumFileDTO sikum)
         {
             try
@@ -406,35 +422,63 @@ namespace SikumkumServerBL.Models
             }
         }
 
-        //public async Task<double> AddRating(SikumFileDTO sikum, int addRating) //Needs to have a way to save which users already rated. Meaning database changes are needed. Work in progress.
-        //{
-        //    const int FAILED = -1;//Negative number to indicate that operation failed.
-        //    try
-        //    {
+        public async Task<double> AddRating(RatingDTO addRating) //Needs to have a way to save which users already rated. Meaning database changes are needed. Work in progress.
+        {
+            const int FAILED = -1;//Negative number to indicate that operation failed.
+            try
+            {
+                double returnRating = FAILED; //Setting it to failed unless proven otherwise.
 
-        //        SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
+                User realUser = await this.Users.FindAsync(addRating.UserId);
+                SikumFile realFile = await this.SikumFiles.Include("Ratings").FirstOrDefaultAsync(sikum => sikum.FileId == addRating.FileId);
+                Rating theRating = new Rating(addRating);
 
-        //        if (realFile == null)
-        //            return FAILED;
 
-        //        if (realFile.NumRated == 0) //If this is the first time the file is rated, set it to the rating.
-        //            realFile.Rating = addRating;
-        //        else
-        //        {
-        //            double newRating = ((realFile.Rating * realFile.NumRated) + addRating) * (realFile.NumRated + 1); //The new average files rating.
-        //            realFile.Rating = newRating;
-        //        }
+                if (ValidateRating(realFile, theRating, realUser)) //Validates that the rating is okay, user didn't already rate the sikum.
+                    return FAILED;
 
-        //        realFile.NumRated++;
+                realFile.Ratings.Add(theRating);
+                returnRating = CalculateTotalRating(realFile);
+                realFile.FileRating = returnRating;
+                realUser.Ratings.Add(theRating);
 
-        //        this.SaveChanges();
-        //        return realFile.Rating;
-        //    }
-        //    catch
-        //    {
-        //        return FAILED;
-        //    }
-        //}
+                this.SaveChanges();
+
+
+                return returnRating;
+            }
+            catch
+            {
+                return FAILED;
+            }
+        }
+        private bool ValidateRating(SikumFile file, Rating rating, User user)
+        {
+            if (user == null)
+                return false;
+            if (file == null)
+                return false;
+            if (rating == null)
+                return false;
+
+            for (int i = 0; i < file.Ratings.Count; i++)
+            {
+                if (file.Ratings[i].UserId == rating.UserId)
+                    return false;
+            }
+
+            return true;
+        }
+        private double CalculateTotalRating(SikumFile file)
+        {
+            double totalRating = 0;
+
+            for (int i = 0; i < file.Ratings.Count; i++)
+            {
+                totalRating += file.Ratings[i].RatingGiven;
+            }
+            return totalRating / file.Ratings.Count; //Returns average of ratings.
+        }
     }
 
 }

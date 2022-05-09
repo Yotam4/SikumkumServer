@@ -55,7 +55,7 @@ CREATE TABLE "Rating"(
     "RatingID" INT NOT NULL Identity,
     "FileID" INT NOT NULL,
     "UserID" INT NOT NULL,
-    "Rating" FLOAT NOT NULL
+    "RatingGiven" FLOAT NOT NULL
 );
 ALTER TABLE
     "Rating" ADD CONSTRAINT "rating_ratingid_primary" PRIMARY KEY("RatingID");

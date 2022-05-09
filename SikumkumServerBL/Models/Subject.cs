@@ -9,12 +9,12 @@ namespace SikumkumServerBL.Models
     {
         public Subject()
         {
-            SikumFiles = new HashSet<SikumFile>();
+            SikumFiles = new List<SikumFile>();
         }
 
         public int SubjectId { get; set; }
         public string SubjectName { get; set; }
 
-        public virtual ICollection<SikumFile> SikumFiles { get; set; }
+        public virtual List<SikumFile> SikumFiles { get; set; }
     }
 }

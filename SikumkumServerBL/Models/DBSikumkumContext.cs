@@ -92,8 +92,6 @@ namespace SikumkumServerBL.Models
 
                 entity.Property(e => e.FileId).HasColumnName("FileID");
 
-                entity.Property(e => e.Rating1).HasColumnName("Rating");
-
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
                 entity.HasOne(d => d.File)

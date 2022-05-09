@@ -9,9 +9,9 @@ namespace SikumkumServerBL.Models
     {
         public User()
         {
-            Messages = new HashSet<Message>();
-            Ratings = new HashSet<Rating>();
-            SikumFiles = new HashSet<SikumFile>();
+            Messages = new List<Message>();
+            Ratings = new List<Rating>();
+            SikumFiles = new List<SikumFile>();
         }
 
         public int UserId { get; set; }
@@ -22,8 +22,8 @@ namespace SikumkumServerBL.Models
         public string Password { get; set; }
         public double UserRating { get; set; }
 
-        public virtual ICollection<Message> Messages { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<SikumFile> SikumFiles { get; set; }
+        public virtual List<Message> Messages { get; set; }
+        public virtual List<Rating> Ratings { get; set; }
+        public virtual List<SikumFile> SikumFiles { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace SikumkumServerBL.Models
         public virtual FileType Type { get; set; }
         public virtual User User { get; set; }
         public virtual StudyYear Year { get; set; }
-        public virtual ICollection<Message> Messages { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public virtual List<Message> Messages { get; set; }
+        public virtual List<Rating> Ratings { get; set; }
     }
 }

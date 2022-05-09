@@ -21,6 +21,7 @@ namespace SikumkumServerBL.DTO
         public string TextDesc { get; set; }
         public string Url { get; set; }
         public bool Approved { get; set; }
+        public bool Disapproved { get; set; }
         public int NumOfFiles { get; set; }
         public bool HasPdf { get; set; }
         public bool HasImage { get; set; }
@@ -66,6 +67,7 @@ namespace SikumkumServerBL.DTO
             this.NumOfFiles = file.NumOfFiles;
             this.Approved = file.Approved;
             this.PdfFileName = file.PdfFileName;
+            this.Disapproved = file.Disapproved;
         }
     }
 }

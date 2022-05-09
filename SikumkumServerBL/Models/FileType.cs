@@ -9,12 +9,12 @@ namespace SikumkumServerBL.Models
     {
         public FileType()
         {
-            SikumFiles = new HashSet<SikumFile>();
+            SikumFiles = new List<SikumFile>();
         }
 
         public int TypeId { get; set; }
         public string TypeName { get; set; }
 
-        public virtual ICollection<SikumFile> SikumFiles { get; set; }
+        public virtual List<SikumFile> SikumFiles { get; set; }
     }
 }
