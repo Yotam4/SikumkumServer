@@ -13,7 +13,6 @@ namespace SikumkumServerBL.Models
 
         public Rating(RatingDTO ratingDTO)
         {
-            this.RatingId = ratingDTO.RatingId;
             this.RatingGiven = ratingDTO.RatingGiven;
             this.FileId = ratingDTO.FileId;
             this.UserId = ratingDTO.UserId;

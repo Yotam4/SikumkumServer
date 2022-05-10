@@ -385,12 +385,16 @@ namespace SikumkumServerBL.Models
         {
             try
             {
-                SikumFile realFile = this.SikumFiles.Find(sikum.FileId);
+                SikumFile realFile = await this.SikumFiles.Include("Ratings").Include("Messages").FirstOrDefaultAsync(s => sikum.FileId == s.FileId);
 
                 if (realFile == null)
                     return false;
 
-                this.SikumFiles.Remove(realFile);
+
+                this.Ratings.RemoveRange(realFile.Ratings);//Removes ratings of file
+                this.Messages.RemoveRange(realFile.Messages);//Removes messages of file.
+
+                this.SikumFiles.Remove(realFile);//Removes file.
                 this.SaveChanges();
                 return true;
             }
@@ -424,28 +428,27 @@ namespace SikumkumServerBL.Models
 
         public async Task<double> AddRating(RatingDTO addRating) //Needs to have a way to save which users already rated. Meaning database changes are needed. Work in progress.
         {
-            const int FAILED = -1;//Negative number to indicate that operation failed.
+            const double FAILED = -1.00;//Negative number to indicate that operation failed.
             try
             {
-                double returnRating = FAILED; //Setting it to failed unless proven otherwise.
+                double newRating = FAILED; //Setting it to failed unless proven otherwise.
 
                 User realUser = await this.Users.FindAsync(addRating.UserId);
                 SikumFile realFile = await this.SikumFiles.Include("Ratings").FirstOrDefaultAsync(sikum => sikum.FileId == addRating.FileId);
                 Rating theRating = new Rating(addRating);
 
 
-                if (ValidateRating(realFile, theRating, realUser)) //Validates that the rating is okay, user didn't already rate the sikum.
+                if (ValidateRating(realFile, theRating, realUser) == false) //Validates that the rating is okay, user didn't already rate the sikum.
                     return FAILED;
 
-                realFile.Ratings.Add(theRating);
-                returnRating = CalculateTotalRating(realFile);
-                realFile.FileRating = returnRating;
-                realUser.Ratings.Add(theRating);
+                newRating = CalculateTotalRating(realFile, theRating.RatingGiven);
+                this.Ratings.Add(theRating);
+                realFile.FileRating = newRating;
 
                 this.SaveChanges();
 
 
-                return returnRating;
+                return newRating;
             }
             catch
             {
@@ -454,30 +457,38 @@ namespace SikumkumServerBL.Models
         }
         private bool ValidateRating(SikumFile file, Rating rating, User user)
         {
-            if (user == null)
-                return false;
-            if (file == null)
-                return false;
-            if (rating == null)
-                return false;
-
-            for (int i = 0; i < file.Ratings.Count; i++)
+            try
             {
-                if (file.Ratings[i].UserId == rating.UserId)
+                if (user == null)
                     return false;
+                if (file == null)
+                    return false;
+                if (rating == null)
+                    return false;
+                if (file.UserId == user.UserId) //User can't rate themselves.
+                    return false;
+
+                for (int i = 0; i < file.Ratings.Count; i++)
+                {
+                    if (file.Ratings[i].UserId == rating.UserId)
+                        return false;
+                }
+
+                return true;
             }
 
-            return true;
+            catch
+            {
+                return false;
+                //Maybe add exception that says that the user has already rated that sikum? Work in progress.
+            }
         }
-        private double CalculateTotalRating(SikumFile file)
+        private double CalculateTotalRating(SikumFile file, double addRating)
         {
             double totalRating = 0;
 
-            for (int i = 0; i < file.Ratings.Count; i++)
-            {
-                totalRating += file.Ratings[i].RatingGiven;
-            }
-            return totalRating / file.Ratings.Count; //Returns average of ratings.
+            totalRating = (file.FileRating * file.Ratings.Count) + addRating;
+            return totalRating / (file.Ratings.Count + 1); //Returns average of ratings.
         }
     }
 

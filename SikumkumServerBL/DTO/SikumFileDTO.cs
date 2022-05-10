@@ -26,6 +26,7 @@ namespace SikumkumServerBL.DTO
         public bool HasPdf { get; set; }
         public bool HasImage { get; set; }
         public string PdfFileName { get; set; }
+        public double FileRating { get; set; }
 
 
 
@@ -68,6 +69,7 @@ namespace SikumkumServerBL.DTO
             this.Approved = file.Approved;
             this.PdfFileName = file.PdfFileName;
             this.Disapproved = file.Disapproved;
+            this.FileRating = file.FileRating;
         }
     }
 }
