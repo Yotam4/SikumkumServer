@@ -11,7 +11,7 @@ namespace SikumkumServerBL.Models
         public int FileId { get; set; }
         public int UserId { get; set; }
         public string Username { get; set; }
-        public string Message1 { get; set; }
+        public string TheMessage { get; set; }
         public DateTime Date { get; set; }
 
         public virtual SikumFile File { get; set; }

@@ -504,6 +504,69 @@ namespace SikumkumServer.Controllers
                 return Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }
         }
+
+        [Route("AddMessage")]
+        [HttpPost]
+        public async Task<bool> AddMessage([FromBody] MessageDTO newMessage)
+        {
+            try
+            {
+                if (newMessage == null)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                    return false;
+                }
+
+                bool messageAdded= await context.AddMessage(newMessage);
+
+                if (messageAdded == true)
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                    return true;
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                    return false;
+                }
+            }
+
+            catch
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return false;
+            }
+        }
+
+        [Route("GetMessages")]
+        [HttpGet]
+        public async Task<List<MessageDTO>> GetMessages([FromQuery] int fileID)
+        {
+            try
+            {
+                List<MessageDTO> messages = await context.GetMessagesAsync(fileID);
+
+                if (messages != null)
+                {
+
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+                    return messages;
+                }
+
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                    return null;
+                }
+            }
+
+            catch
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return null;
+            }
+        }
     }
 
 }

@@ -435,15 +435,17 @@ namespace SikumkumServerBL.Models
 
                 User realUser = await this.Users.FindAsync(addRating.UserId);
                 SikumFile realFile = await this.SikumFiles.Include("Ratings").FirstOrDefaultAsync(sikum => sikum.FileId == addRating.FileId);
+                User fileOwner = await this.Users.Include("SikumFiles").FirstOrDefaultAsync(user => user.UserId == realFile.UserId);
                 Rating theRating = new Rating(addRating);
 
 
                 if (ValidateRating(realFile, theRating, realUser) == false) //Validates that the rating is okay, user didn't already rate the sikum.
                     return FAILED;
 
-                newRating = CalculateTotalRating(realFile, theRating.RatingGiven);
                 this.Ratings.Add(theRating);
+                newRating = CalculateTotalRating(realFile);
                 realFile.FileRating = newRating;
+                fileOwner.UserRating = CalculateUserRating(fileOwner); //Sets owner's new total rating.
 
                 this.SaveChanges();
 
@@ -483,13 +485,71 @@ namespace SikumkumServerBL.Models
                 //Maybe add exception that says that the user has already rated that sikum? Work in progress.
             }
         }
-        private double CalculateTotalRating(SikumFile file, double addRating)
+        private double CalculateTotalRating(SikumFile file)
         {
             double totalRating = 0;
+            for (int i = 0; i < file.Ratings.Count; i++)
+            {
+                totalRating += file.Ratings[i].RatingGiven;
+            }
+            return totalRating / (file.Ratings.Count); //Returns average of ratings.
+        }
+        private double CalculateUserRating(User user)
+        {
+            if (user.SikumFiles.Count == 0)//If for some reason user doesn't have sikumfiles. shouldn't happen though.
+                return -1.00;
 
-            totalRating = (file.FileRating * file.Ratings.Count) + addRating;
-            return totalRating / (file.Ratings.Count + 1); //Returns average of ratings.
+            double totalRating = 0;
+            for (int i = 0; i < user.SikumFiles.Count; i++)
+            {
+                totalRating += user.SikumFiles[i].FileRating;
+            }
+
+            return totalRating / (user.SikumFiles.Count); //Returns average of file ratings. 
+        }
+        public async Task<bool> AddMessage(MessageDTO message)
+        {
+            try
+            {
+                if (message == null)
+                    return false;
+                Message realMessage = new Message(message); //Creates the message
+
+                this.Messages.Add(realMessage); //Adds the message to the DB.
+
+                this.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<List<MessageDTO>> GetMessagesAsync(int fileID)
+        {
+            try
+            {
+                SikumFile realFile = await this.SikumFiles.Include("Messages").FirstOrDefaultAsync(sikum => sikum.FileId == fileID); //Finds the file to get the messages from.
+
+                if (realFile == null || realFile.Messages.Count == 0) //If file wasn't found or it doesn't have any messages, return null.
+                    return null;
+
+                List<MessageDTO> returnMessages = new List<MessageDTO>();
+                
+                for (int i = 0; i < realFile.Messages.Count; i++) //Creates a list of messagesDTO from the sikum's real messages list.
+                {
+                    Message currentMessage = realFile.Messages[i];
+                    returnMessages.Add( new MessageDTO(currentMessage) );
+                }
+
+                return returnMessages;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
-
 }

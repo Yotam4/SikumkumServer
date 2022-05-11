@@ -60,10 +60,9 @@ namespace SikumkumServerBL.Models
 
                 entity.Property(e => e.FileId).HasColumnName("FileID");
 
-                entity.Property(e => e.Message1)
+                entity.Property(e => e.TheMessage)
                     .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("Message");
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 

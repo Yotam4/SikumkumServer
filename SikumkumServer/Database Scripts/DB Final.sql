@@ -64,7 +64,7 @@ CREATE TABLE "Message"(
     "FileID" INT NOT NULL,
     "UserID" INT NOT NULL,
     "Username" NVARCHAR(255) NOT NULL,
-    "Message" NVARCHAR(255) NOT NULL,
+    TheMessage NVARCHAR(255) NOT NULL,
     "Date" DATE NOT NULL
 );
 ALTER TABLE

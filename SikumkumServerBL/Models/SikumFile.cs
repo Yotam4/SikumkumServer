@@ -9,8 +9,8 @@ namespace SikumkumServerBL.Models
     {
         //public SikumFile()
         //{
-        //    Messages = new HashSet<Message>();
-        //    Ratings = new HashSet<Rating>();
+        //    Messages = new List<Message>();
+        //    Ratings = new List<Rating>();
         //}
 
         public int FileId { get; set; }
