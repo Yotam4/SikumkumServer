@@ -13,14 +13,13 @@ namespace SikumkumServerBL.Models
     public partial class DBSikumkumContext : DbContext
     {
 
-        public async Task<UserDTO> Login(string username, string password)
+        public async Task<User> Login(string username, string password)
         {
             try
             {
 
                 User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password)); //There could be a better option than single. Research when you're not lazy.S
-                UserDTO returnUser = new UserDTO(loginUser);
-                return returnUser;
+                return loginUser;
             }
 
             catch (Exception e)
@@ -266,7 +265,7 @@ namespace SikumkumServerBL.Models
                 var sikumFiles = this.SikumFiles.Include("Year").Include("Type").Include("User");
                 foreach (SikumFile sikum in sikumFiles) //Adds the non-approved sikumfiles.
                 {
-                    if (sikum.Approved == false)
+                    if (sikum.Approved == false && sikum.Disapproved == false) //If it isn't approved or dissapproved, it's pending.
                         returnFiles.Add(new SikumFileDTO(sikum));
                 }
                 return returnFiles;

@@ -24,21 +24,53 @@ namespace SikumkumServer.Controllers
         }
 
 
+        //[Route("Login")]
+        //[HttpGet] //Change to post.
+        //public async Task<UserDTO> Login([FromQuery] string username, [FromQuery] string pass)
+        //{
+        //    try
+        //    {
+        //        UserDTO user = await context.Login(username, pass);
+        //        UserDTO userDTO = new UserDTO(user);
+        //        if (user != null)
+        //        {
+        //            HttpContext.Session.SetObject("theUser", user);
+
+        //            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+
+        //            return user;
+        //        }
+
+        //        else
+        //        {
+        //            Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+        //            return null;
+        //        }
+        //    }
+
+        //    catch
+        //    {
+        //        Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+        //        return null;
+        //    }
+        //}
+
         [Route("Login")]
-        [HttpGet] //Change to post.
-        public async Task<UserDTO> Login([FromQuery] string username, [FromQuery] string pass)
+        [HttpPost]
+        public async Task<UserDTO> Login([FromBody] UserDTO userDTO)
         {
             try
             {
-                UserDTO user = await context.Login(username, pass);
+                User user = await context.Login(userDTO.Username, userDTO.Password);
 
-                if (user != null)
+                UserDTO returnUser = new UserDTO(user); //Returns user DTO.
+
+                if (returnUser != null)
                 {
-                    HttpContext.Session.SetObject("theUser", user);
+                    HttpContext.Session.SetObject("theUser", user); //Sets real user in session.
 
                     Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-
-                    return user;
+                    return returnUser;
                 }
 
                 else
@@ -50,7 +82,6 @@ namespace SikumkumServer.Controllers
 
             catch
             {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                 return null;
             }
         }
@@ -61,7 +92,7 @@ namespace SikumkumServer.Controllers
         {
             try
             {
-                User realUser = await context.Users.FindAsync(user.UserId);
+                User realUser = HttpContext.Session.GetObject<User>("theUser");
 
                 if (realUser != null)
                 {
