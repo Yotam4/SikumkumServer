@@ -61,7 +61,10 @@ namespace SikumkumServer.Controllers
         {
             try
             {
-                User user = await context.Login(userDTO.Username, userDTO.Password);
+                User user = await context.Login(userDTO);
+
+                if (user == null)
+                    return null;
 
                 UserDTO returnUser = new UserDTO(user); //Returns user DTO.
 

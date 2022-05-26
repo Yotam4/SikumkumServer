@@ -13,13 +13,19 @@ namespace SikumkumServerBL.Models
     public partial class DBSikumkumContext : DbContext
     {
 
-        public async Task<User> Login(string username, string password)
+        public async Task<User> Login(UserDTO tryLogin)
         {
             try
             {
+                User loginUser = await this.Users.FirstAsync(u => u.Username == tryLogin.Username);
 
-                User loginUser = this.Users.Single(u => (u.Username == username && u.Password == password)); //There could be a better option than single. Research when you're not lazy.S
-                return loginUser;
+                if(loginUser == null) //If no user exists
+                    return null;
+
+                if (loginUser.Username == tryLogin.Username && loginUser.Password == tryLogin.Password) //If username and password matches. 
+                    return loginUser;
+
+                return null;
             }
 
             catch (Exception e)
@@ -33,7 +39,7 @@ namespace SikumkumServerBL.Models
         {
             try
             {
-                User isDuplicate = this.Users.FirstOrDefault(u => (u.Username == user.Username || u.Email == user.Email)); //Checks if the Username or Email already exists.
+                User isDuplicate = await this.Users.FirstOrDefaultAsync(u => (u.Username == user.Username || u.Email == user.Email)); //Checks if the Username or Email already exists.
                 if (isDuplicate != null)
                 {
                     if (user.Username == isDuplicate.Username)
@@ -41,6 +47,7 @@ namespace SikumkumServerBL.Models
 
                     if (user.Email == isDuplicate.Email)
                         throw new Exception("This Email is already in use. Please pick a new one.");
+                    return null;
                 }
 
                 User addUser = new User(user.Username, user.Email, user.Password);
